@@ -15,6 +15,7 @@ public class User {
     private String role;
     private String status;
     private String imagePath;
+    @Column(columnDefinition = "TEXT")
     private String embeddings;
     @ManyToMany
     @JoinTable(
@@ -62,5 +63,8 @@ public class User {
     }
     public String getRole(){
         return this.role;
+    }
+    public String getEmbeddings(){
+        return this.embeddings;
     }
 }

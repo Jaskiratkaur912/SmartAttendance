@@ -35,6 +35,7 @@ public class SecurityConfig {
                         .requestMatchers("/api/class/create").hasRole("TEACHER")
                         // ─── Student only endpoints ───
                         .requestMatchers("/student/**").hasRole("STUDENT")
+                        .requestMatchers("/api/users/delete").permitAll()
                         .anyRequest().authenticated()
                 )
                 .oauth2Login(oauth -> oauth

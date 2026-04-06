@@ -3,6 +3,7 @@ package com.SmartAttendance.demo.Service;
 import com.SmartAttendance.demo.DTO.StudentProfileDTO;
 import com.SmartAttendance.demo.Entities.AttEnum;
 import com.SmartAttendance.demo.Entities.Attendance;
+import com.SmartAttendance.demo.Entities.User;
 import com.SmartAttendance.demo.Repository.AttendanceRepository;
 import com.SmartAttendance.demo.Repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,7 +25,8 @@ public class StudentProfileService {
                 .map(Attendance::getDate)
                 .sorted()
                 .toList();
-        String studName=userRepository.findByuserId(studentId).orElseThrow();
+        User user=userRepository.findByuserId(studentId).orElseThrow();
+        String studName=user.getName();
         StudentProfileDTO dto=new StudentProfileDTO(presentDates,studName);
         return dto;
     }

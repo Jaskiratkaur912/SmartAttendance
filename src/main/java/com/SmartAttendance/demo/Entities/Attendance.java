@@ -27,4 +27,17 @@ public class Attendance {
     public User getUser(){
         return this.user;
     }
+    //settters
+    public void setUser(User user){
+        this.user=user;
+    }
+    public void setClassRoom(ClassRoom classRoom){
+        this.classRoom=classRoom;
+    }
+    public void setIsPresent(AttEnum attEnum){
+        this.isPresent=attEnum;
+    }
+    public void setDate(LocalDate date){
+        this.date=date;
+    }
 }
