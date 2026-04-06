@@ -32,6 +32,9 @@ public class User {
         this.role=role;
         this.status=status;
     }
+    public String getName(){
+        return this.name;
+    }
     public void setEmailId(String email){
         this.emailId=email;
     }
