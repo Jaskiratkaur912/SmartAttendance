@@ -13,5 +13,10 @@ public class Doubt {
     private Long studentId;
     private String message;
     private LocalDateTime createdAt;
+    public Doubt(){
+
+    }
+    public void setAssignmentId(Long id){this.assignmentId=id;}
+    public void setCreatedAt(LocalDateTime createdAt){this.createdAt=createdAt;}
 
 }
