@@ -43,7 +43,8 @@ public class OAuthSuccessHandler extends SimpleUrlAuthenticationSuccessHandler {
             // ✅ Existing user → go to dashboard
             // we need to generate JWT token for this existing user
             String role=user.getRole();
-            String token=jwtUtil.generateToken(email,role);
+            Long id=user.getId();
+            String token=jwtUtil.generateToken(id,email,role);
             //sending the token via JSON
             response.setContentType("application/json");
             response.getWriter().write(

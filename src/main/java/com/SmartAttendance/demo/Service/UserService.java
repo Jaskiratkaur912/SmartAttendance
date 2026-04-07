@@ -112,7 +112,8 @@ public class UserService {
         userRepository.save(user);
 
         // 4. Generate JWT
-        return jwtUtil.generateToken(email, role);
+        Long id=user.getId();
+        return jwtUtil.generateToken(id,email, role);
     }
     public User getUserById(Long id){
         return userRepository.findById(id).orElseThrow(()->new RuntimeException("no user found"));

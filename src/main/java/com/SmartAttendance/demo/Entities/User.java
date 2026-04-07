@@ -67,4 +67,8 @@ public class User {
     public String getEmbeddings(){
         return this.embeddings;
     }
+
+    public Long getId() {
+        return this.userId;
+    }
 }
