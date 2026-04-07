@@ -27,4 +27,5 @@ public class TeacherController {
         List<ClassDTO> classAtt=attendanceService.fetchClassAttendance(classId);
         return ResponseEntity.ok(classAtt);
     }
+
 }
