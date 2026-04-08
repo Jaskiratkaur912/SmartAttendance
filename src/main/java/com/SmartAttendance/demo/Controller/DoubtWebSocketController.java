@@ -15,7 +15,7 @@ public class DoubtWebSocketController {
     @Autowired
     DoubtRepository doubtRepository;
     @MessageMapping("askDoubt/{assignmentId}")
-    @SendTo("topic/doubts/{assignmentId}")
+    @SendTo("/topic/doubts/{assignmentId}")
     public Doubt handleDoubt(@DestinationVariable Long assignmentId,
                              Doubt message){
         message.setAssignmentId(assignmentId);
