@@ -1,4 +1,5 @@
 package com.SmartAttendance.demo.Service;
+import com.SmartAttendance.demo.Entities.ClassRoom;
 import com.SmartAttendance.demo.Entities.User;
 import com.SmartAttendance.demo.Repository.UserRepository;
 import com.SmartAttendance.demo.Security.JwtUtil;
@@ -127,5 +128,9 @@ public class UserService {
         userRepository.delete(user);
         userRepository.flush();
         return "User deleted successfully";
+    }
+    public List<ClassRoom> getEnrolledClassrooms(Long userId){
+        User user=userRepository.findByuserId(userId).orElseThrow();
+        return user.getEnrolledClasses();
     }
 }

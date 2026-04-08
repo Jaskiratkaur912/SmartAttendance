@@ -33,6 +33,9 @@ public class User {
         this.role=role;
         this.status=status;
     }
+    public List<ClassRoom> getEnrolledClasses(){
+        return this.classesJoined;
+    }
     public String getName(){
         return this.name;
     }
