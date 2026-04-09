@@ -35,4 +35,5 @@ public class DoubtWebSocketController {
         doubtRepository.save(doubt);
         return doubt;
     }
+    
 }

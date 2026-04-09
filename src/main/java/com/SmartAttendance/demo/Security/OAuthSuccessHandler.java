@@ -36,8 +36,8 @@ public class OAuthSuccessHandler extends SimpleUrlAuthenticationSuccessHandler {
         if ("INCOMPLETE".equals(user.getStatus())) {
             // 🆕 New user → go to registration page
             response.setContentType("application/json");
-            response.getWriter().write(
-                    "{\"message\": \"Please complete registration\", \"email\": \"" + email + "\"}"
+            response.sendRedirect(
+                    "http://localhost:5173/complete-registration?email=" + email
             );
         } else {
             // ✅ Existing user → go to dashboard
