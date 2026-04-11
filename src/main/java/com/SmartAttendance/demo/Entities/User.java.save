@@ -1,0 +1,75 @@
+package com.SmartAttendance.demo.Entities;
+import jakarta.persistence.*;
+
+import java.util.ArrayList;
+import java.util.List;
+
+@Entity
+@Table(name="users")
+public class User {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long userId;
+    private String name;
+    private String emailId;
+    private String role;
+    private String status;
+    private String imagePath;
+    private String embeddings;
+    @ManyToMany
+    @JoinTable(
+            name="Enrollments",
+            joinColumns = @JoinColumn(name = "user_id"),
+            inverseJoinColumns = @JoinColumn(name = "class_id")
+    )
+    private List<ClassRoom> classesJoined=new ArrayList<>();
+    public User(){
+
+    }
+    public User(String name,String emailId,String role,String status){
+        this.name=name;
+        this.emailId=emailId;
+        this.role=role;
+        this.status=status;
+    }
+    public void setEmailId(String email){
+        this.emailId=email;
+    }
+    public void setName(String name){
+        this.name=name;
+    }
+
+    public String getStatus() {
+        return status;
+    }
+    public void setStatus(String status){
+        this.status=status;
+    }
+    public void setRole(String role){
+        this.role=role;
+    }
+    public void setImagePath(String path){
+        this.imagePath=path;
+    }
+    public void setEmbeddings(String embeddings){
+        this.embeddings=embeddings;
+    }
+    public void joinClass(ClassRoom newClass){
+        classesJoined.add(newClass);
+    }
+    public String getRole(){
+        return this.role;
+    }
+    public Long getUserId() {
+    return userId;
+}
+
+public String getEmailId() {
+    return emailId;
+}
+}
+x
+XXXX
+
+X
+
