@@ -35,9 +35,8 @@ public class OAuthSuccessHandler extends SimpleUrlAuthenticationSuccessHandler {
 
         if ("INCOMPLETE".equals(user.getStatus())) {
             // 🆕 New user → go to registration page
-            response.setContentType("application/json");
             response.sendRedirect(
-                    "http://localhost:5173/complete-registration?email=" + email
+                    "http://localhost:5173/oauth/callback?message=incomplete&email=" + email
             );
         } else {
             // ✅ Existing user → go to dashboard
@@ -45,11 +44,10 @@ public class OAuthSuccessHandler extends SimpleUrlAuthenticationSuccessHandler {
             String role=user.getRole();
             Long id=user.getId();
             String token=jwtUtil.generateToken(id,email,role);
-            //sending the token via JSON
-            response.setContentType("application/json");
-            response.getWriter().write(
-                    "{\"token\": \"" + token + "\", \"role\": \"" + user.getRole() + "\"}"
+            response.sendRedirect(
+                    "http://localhost:5173/oauth/callback?token=" + token + "&role=" + role
             );
+
         }
     }
 }
