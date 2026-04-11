@@ -1,18 +1,21 @@
 package com.SmartAttendance.demo.Controller;
 
+import com.SmartAttendance.demo.Config.CloudinaryConfig;
 import com.SmartAttendance.demo.DTO.StudentProfileDTO;
+import com.SmartAttendance.demo.Entities.Assignment;
 import com.SmartAttendance.demo.Entities.ClassRoom;
-import com.SmartAttendance.demo.Service.AttendanceService;
-import com.SmartAttendance.demo.Service.EnrollmentService;
-import com.SmartAttendance.demo.Service.StudentProfileService;
-import com.SmartAttendance.demo.Service.UserService;
+import com.SmartAttendance.demo.Repository.AssignmentRepository;
+import com.SmartAttendance.demo.Service.*;
+import com.cloudinary.utils.ObjectUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/student")
@@ -25,6 +28,10 @@ public class StudentController {
     private AttendanceService attendanceService;
     @Autowired
     private UserService userService;
+    @Autowired
+    private AssignmentRepository assignmentRepository;
+    @Autowired
+    private CloudinaryService cloudinaryService;
     @PreAuthorize("hasRole('STUDENT')")
     @PostMapping("/joinClass")
     public void joinClass(@RequestParam Long studentId,@RequestParam String classCode){
@@ -44,6 +51,10 @@ public class StudentController {
     public ResponseEntity<List<ClassRoom>> fetchEnrolledClasses(@RequestParam Long studentId){
         List<ClassRoom> enrolledClasses=userService.getEnrolledClassrooms(studentId);
         return ResponseEntity.ok(enrolledClasses);
+
+    }
+    @PostMapping("/submitAssignment")
+    public void submitAssignment(@RequestParam Long assignmentId,@RequestParam MultipartFile solution,@RequestParam Long studentId) throws IOException {
 
     }
 

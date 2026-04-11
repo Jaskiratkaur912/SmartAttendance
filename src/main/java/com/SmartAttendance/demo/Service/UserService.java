@@ -55,12 +55,12 @@ public class UserService {
                 .orElseThrow(() -> new RuntimeException("User not found"));
 
         user.setRole(role);
-
+        Long id=user.getId();
         // 2. Only for STUDENT → process image + embedding
         if ("STUDENT".equalsIgnoreCase(role)) {
 
             // 🔹 Upload image to Cloudinary
-            String imageUrl = cloudinaryService.uploadImage(image, email);
+            String imageUrl = cloudinaryService.uploadFile(image, id);
             user.setImagePath(imageUrl);
 
             // 🔹 Call FastAPI
@@ -113,7 +113,7 @@ public class UserService {
         userRepository.save(user);
 
         // 4. Generate JWT
-        Long id=user.getId();
+
         return jwtUtil.generateToken(id,email, role);
     }
     public User getUserById(Long id){

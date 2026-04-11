@@ -1,6 +1,7 @@
 package com.SmartAttendance.demo.Config;
 
 import com.cloudinary.Cloudinary;
+import com.cloudinary.Uploader;
 import com.cloudinary.utils.ObjectUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -26,4 +27,6 @@ public class CloudinaryConfig {
                 "api_secret", apiSecret
         ));
     }
+
+
 }

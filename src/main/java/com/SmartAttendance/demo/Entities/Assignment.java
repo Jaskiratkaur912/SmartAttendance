@@ -3,6 +3,7 @@ package com.SmartAttendance.demo.Entities;
 import jakarta.persistence.*;
 
 import java.time.LocalDate;
+import java.util.List;
 
 @Entity
 public class Assignment {
@@ -13,5 +14,10 @@ public class Assignment {
 
     private String description;
     private LocalDate deadline;
-    private String submissionUrl;
+    @OneToMany(mappedBy = "assignment", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<AssignmentSubmission> submissions;
+    public Assignment(){
+
+    }
+
 }

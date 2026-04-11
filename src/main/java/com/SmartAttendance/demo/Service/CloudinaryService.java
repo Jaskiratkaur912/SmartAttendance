@@ -17,23 +17,22 @@ public class CloudinaryService {
         this.cloudinary = cloudinary;
     }
 
-    public String uploadImage(MultipartFile image, String email) {
+    public String uploadFile(MultipartFile file, Long studentId) {
         try {
-            // Upload to Cloudinary under "students" folder
             Map result = cloudinary.uploader().upload(
-                    image.getBytes(),
+                    file.getBytes(),
                     ObjectUtils.asMap(
-                            "folder", "smart-attendance/students",
-                            "public_id", email,          // email as filename
-                            "overwrite", true            // replace if exists
+                            "folder", "smart-attendance/assignments",
+                            "public_id", studentId,
+                            "overwrite", true,
+                            "resource_type", "auto"   // 🔥 IMPORTANT
                     )
             );
 
-            // Returns the public URL of uploaded image
             return result.get("secure_url").toString();
 
         } catch (IOException e) {
-            throw new RuntimeException("Failed to upload image to Cloudinary: " + e.getMessage());
+            throw new RuntimeException("Failed to upload file: " + e.getMessage());
         }
     }
 }
