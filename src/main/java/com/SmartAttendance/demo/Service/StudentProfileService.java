@@ -25,7 +25,7 @@ public class StudentProfileService {
                 .map(Attendance::getDate)
                 .sorted()
                 .toList();
-        User user=userRepository.findByuserId(studentId).orElseThrow();
+        User user=userRepository.findByUserId(studentId).orElseThrow();
         String studName=user.getName();
         StudentProfileDTO dto=new StudentProfileDTO(presentDates,studName);
         return dto;

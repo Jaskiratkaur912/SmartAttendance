@@ -29,7 +29,7 @@ public class StudentController {
     @Autowired
     private UserService userService;
     @Autowired
-    private AssignmentRepository assignmentRepository;
+    private AssignmentService assignmentService;
     @Autowired
     private CloudinaryService cloudinaryService;
     @PreAuthorize("hasRole('STUDENT')")
@@ -55,7 +55,7 @@ public class StudentController {
     }
     @PostMapping("/submitAssignment")
     public void submitAssignment(@RequestParam Long assignmentId,@RequestParam MultipartFile solution,@RequestParam Long studentId) throws IOException {
-
+        assignmentService.submitAssignment(assignmentId,solution,studentId);
     }
 
     

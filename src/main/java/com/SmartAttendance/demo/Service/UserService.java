@@ -15,15 +15,12 @@ import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.http.HttpHeaders;
 
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import org.springframework.http.MediaType;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.ResponseEntity;
+
 @Service
 public class UserService {
     @Autowired
@@ -130,7 +127,7 @@ public class UserService {
         return "User deleted successfully";
     }
     public List<ClassRoom> getEnrolledClassrooms(Long userId){
-        User user=userRepository.findByuserId(userId).orElseThrow();
+        User user=userRepository.findByUserId(userId).orElseThrow();
         return user.getEnrolledClasses();
     }
 }

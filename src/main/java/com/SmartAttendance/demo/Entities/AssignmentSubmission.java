@@ -19,6 +19,11 @@ public class AssignmentSubmission {
     public AssignmentSubmission(){
 
     }
+    public AssignmentSubmission(Assignment assignment,User student,String submissionUrl){
+        this.assignment=assignment;
+        this.student=student;
+        this.submissionUrl=submissionUrl;
+    }
     public void setSubmissionUrl(String submissionUrl){
         this.submissionUrl=submissionUrl;
     }
