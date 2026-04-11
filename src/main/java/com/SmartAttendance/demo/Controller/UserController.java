@@ -16,8 +16,8 @@ public class UserController {
         this.userService = userService;
     }
     @PostMapping("/complete-registration")
-    public ResponseEntity<?> completeRegistration(@RequestParam Long id,@RequestParam String role,@RequestParam MultipartFile image) throws Exception {
-        String token = userService.completeRegistration(id, role, image);
+    public ResponseEntity<?> completeRegistration(@RequestParam String email,@RequestParam String role,@RequestParam MultipartFile image) throws Exception {
+        String token = userService.completeRegistration(email, role, image);
         return ResponseEntity.ok(token);
     }
     @DeleteMapping("/delete")
