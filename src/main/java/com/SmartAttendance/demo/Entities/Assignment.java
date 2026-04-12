@@ -22,6 +22,6 @@ public class Assignment {
 
     }
 
-    public LocalDateTime getDeadline() {
+    public LocalDateTime getDeadline() { return this.deadline;
     }
 }

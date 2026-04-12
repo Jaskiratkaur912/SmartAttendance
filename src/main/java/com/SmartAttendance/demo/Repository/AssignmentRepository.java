@@ -8,5 +8,5 @@ import java.util.Optional;
 
 public interface AssignmentRepository extends JpaRepository<Assignment,Long> {
 
-    Optional<Assignment> fetchById(Long assignmentId);
+    // findById already exists in JpaRepository, no need to declare it
 }
