@@ -7,10 +7,13 @@ import com.SmartAttendance.demo.Repository.AssignmentRepository;
 import com.SmartAttendance.demo.Repository.AssignmentSubmissionRepository;
 import com.SmartAttendance.demo.Repository.UserRepository;
 import jakarta.transaction.Transactional;
+import org.springframework.stereotype.Service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDateTime;
+
+@Service
 
 public class AssignmentService {
     @Autowired

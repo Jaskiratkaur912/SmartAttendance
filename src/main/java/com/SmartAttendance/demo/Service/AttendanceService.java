@@ -25,7 +25,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
-
+import java.time.LocalDateTime;
 @Service
 public class AttendanceService {
     @Autowired
@@ -130,4 +130,25 @@ public class AttendanceService {
                 })
                 .toList();
     }
+    public Attendance markAttendanceByLocation(String email, Double latitude, Double longitude) {
+    User user = userRepository.findByEmailId(email)
+        .orElseThrow(() -> new RuntimeException("User not found"));
+
+    LocalDate today = LocalDate.now();
+
+    Attendance attendance = new Attendance();
+    attendance.setUser(user);
+    attendance.setDate(today);
+    attendance.setLatitude(latitude);
+    attendance.setLongitude(longitude);
+    attendance.setIsPresent(AttEnum.PRESENT);
+
+    return attendanceRepository.save(attendance);
+}
+
+public List<Attendance> getMyAttendance(String email) {
+    User user = userRepository.findByEmailId(email)
+        .orElseThrow(() -> new RuntimeException("User not found"));
+    return attendanceRepository.findByUser(user);
+}
 }

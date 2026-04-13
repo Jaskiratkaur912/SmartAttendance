@@ -3,6 +3,7 @@ package com.SmartAttendance.demo.Entities;
 import jakarta.persistence.*;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 @Entity
 public class Attendance {
     @Id
@@ -15,6 +16,9 @@ public class Attendance {
     @ManyToOne
     @JoinColumn(name="class_id")
     private ClassRoom classRoom;
+    private LocalDateTime timestamp;  // ✅ new
+    private Double latitude;          // ✅ new
+    private Double longitude;
 
     private LocalDate date;
     private AttEnum isPresent;
@@ -27,6 +31,9 @@ public class Attendance {
     public User getUser(){
         return this.user;
     }
+    public LocalDateTime getTimestamp() { return this.timestamp; }
+    public Double getLatitude() { return this.latitude; }
+    public Double getLongitude() { return this.longitude; }
     //settters
     public void setUser(User user){
         this.user=user;
@@ -40,4 +47,8 @@ public class Attendance {
     public void setDate(LocalDate date){
         this.date=date;
     }
+    public void setTimestamp(LocalDateTime timestamp) { this.timestamp = timestamp; }
+    public void setLatitude(Double latitude) { this.latitude = latitude; }
+    public void setLongitude(Double longitude) { this.longitude = longitude; }
+
 }
