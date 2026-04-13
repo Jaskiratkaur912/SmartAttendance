@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 
+import java.util.List;
 import java.util.Random;
 @Service
 public class ClassService {
@@ -35,5 +36,8 @@ public class ClassService {
     }
     public ClassRoom getClass(String code){
         return classRepository.findByClassCode(code).orElseThrow(()->new RuntimeException("Class not found!"));
+    }
+    public List<ClassRoom> fetchClasses(Long teacher_id){
+        return classRepository.findByTeacher_id(teacher_id);
     }
 }

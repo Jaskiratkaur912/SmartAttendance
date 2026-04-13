@@ -37,8 +37,7 @@ public class TeacherController {
     }
     @GetMapping("/fetchClasses")
     public void fetchClass(@RequestParam Long teacherId){
-
-
+        classService.fetchClasses(teacherId);
     }
 
 
