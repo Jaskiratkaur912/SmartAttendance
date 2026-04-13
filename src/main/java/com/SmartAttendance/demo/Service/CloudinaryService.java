@@ -23,7 +23,7 @@ public class CloudinaryService {
                     file.getBytes(),
                     ObjectUtils.asMap(
                             "folder", "smart-attendance/assignments",
-                            "public_id", studentId,
+                            "public_id", String.valueOf(studentId),
                             "overwrite", true,
                             "resource_type", "auto"   // 🔥 IMPORTANT
                     )
