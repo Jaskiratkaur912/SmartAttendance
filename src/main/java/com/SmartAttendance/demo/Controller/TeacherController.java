@@ -35,6 +35,11 @@ public class TeacherController {
     public void postAssignment(@RequestBody Assignment assignment){
         assignmentRepository.save(assignment);
     }
+    @GetMapping("/fetchClasses")
+    public void fetchClass(@RequestParam Long teacherId){
+
+
+    }
 
 
 }
