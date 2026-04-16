@@ -2,6 +2,7 @@ package com.SmartAttendance.demo.Controller;
 
 import com.SmartAttendance.demo.DTO.ClassDTO;
 import com.SmartAttendance.demo.Entities.Assignment;
+import com.SmartAttendance.demo.Entities.ClassRoom;
 import com.SmartAttendance.demo.Repository.AssignmentRepository;
 import com.SmartAttendance.demo.Service.AttendanceService;
 import com.SmartAttendance.demo.Service.ClassService;
@@ -36,8 +37,8 @@ public class TeacherController {
         assignmentRepository.save(assignment);
     }
     @GetMapping("/fetchClasses")
-    public void fetchClass(@RequestParam Long teacherId){
-        classService.fetchClasses(teacherId);
+    public List<ClassRoom> fetchClass(@RequestParam Long teacherId){
+        return classService.fetchClasses(teacherId);
     }
 
 
