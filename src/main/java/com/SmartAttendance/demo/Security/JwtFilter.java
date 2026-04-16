@@ -23,6 +23,16 @@ public class JwtFilter extends OncePerRequestFilter {
     }
 
     @Override
+    protected boolean shouldNotFilter(HttpServletRequest request) {
+
+        String path = request.getServletPath();
+
+        return path.startsWith("/oauth2/")
+                || path.startsWith("/login/oauth2/")
+                || path.startsWith("/error");
+    }
+
+    @Override
     protected void doFilterInternal(HttpServletRequest request,
                                     HttpServletResponse response,
                                     FilterChain filterChain)
@@ -31,20 +41,23 @@ public class JwtFilter extends OncePerRequestFilter {
         String authHeader = request.getHeader("Authorization");
 
         if (authHeader != null && authHeader.startsWith("Bearer ")) {
-            String token = authHeader.substring(7);   // remove "Bearer "
+
+            String token = authHeader.substring(7);
 
             if (jwtUtil.isTokenValid(token)) {
+
                 String email = jwtUtil.extractEmail(token);
                 String role  = jwtUtil.extractRole(token);
 
-                // Set authentication in Spring Security context
                 UsernamePasswordAuthenticationToken authentication =
                         new UsernamePasswordAuthenticationToken(
                                 email,
                                 null,
                                 List.of(new SimpleGrantedAuthority("ROLE_" + role))
                         );
-                SecurityContextHolder.getContext().setAuthentication(authentication);
+
+                SecurityContextHolder.getContext()
+                        .setAuthentication(authentication);
             }
         }
 

@@ -26,6 +26,7 @@ public class SecurityConfig {
         this.successHandler = successHandler;
         this.jwtFilter = jwtFilter;
     }
+
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration config = new CorsConfiguration();
@@ -40,29 +41,52 @@ public class SecurityConfig {
 
         return source;
     }
+
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+
         http
                 .cors(cors -> cors.configurationSource(corsConfigurationSource()))
+
                 .csrf(csrf -> csrf.disable())
-                .sessionManagement(session -> session
-                        .sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED)  // ← change this
+
+                .sessionManagement(session ->
+                        session.sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED)
                 )
+
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/api/users/complete-registration").permitAll()
-                        // ─── Teacher only endpoints ───
-                        .requestMatchers("/api/class/create").hasRole("TEACHER")
-                        // ─── Student only endpoints ───
-                        .requestMatchers("/student/**").hasRole("STUDENT")
-                        .requestMatchers("/api/users/delete").permitAll()
+
+                        // OAuth URLs
+                        .requestMatchers(
+                                "/oauth2/**",
+                                "/login/oauth2/**",
+                                "/error"
+                        ).permitAll()
+
+                        // Public APIs
+                        .requestMatchers(
+                                "/api/users/complete-registration",
+                                "/api/users/delete"
+                        ).permitAll()
+
+                        // Teacher
+                        .requestMatchers("/api/class/create")
+                        .hasRole("TEACHER")
+
+                        // Student
+                        .requestMatchers("/student/**")
+                        .hasRole("STUDENT")
+
+                        // everything else
                         .anyRequest().authenticated()
                 )
+
                 .oauth2Login(oauth -> oauth
                         .successHandler(successHandler)
                 )
+
                 .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
-        
     }
 }
