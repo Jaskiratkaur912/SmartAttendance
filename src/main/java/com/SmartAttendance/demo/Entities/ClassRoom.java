@@ -32,6 +32,7 @@ public class ClassRoom {
         this.attendanceOpen=val;
     }
     public void incClassCount(){this.totalClasses+=1;}
-
-
+    public boolean isAttendanceOpen(){
+        return this.attendanceOpen;
+    }
 }
