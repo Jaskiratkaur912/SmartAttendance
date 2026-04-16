@@ -17,6 +17,7 @@ public class ClassRoom {
     @ManyToMany(mappedBy = "classesJoined")
     private List<User> enrolledStudents = new ArrayList<>();
     private int totalClasses;
+    private boolean attendanceOpen;
     public ClassRoom(){
 
     }
@@ -27,6 +28,10 @@ public class ClassRoom {
     public void setClassCode(String classCode){
         this.classCode=classCode;
     }
+    public void setAttendanceOpen(boolean val){
+        this.attendanceOpen=val;
+    }
+    public void incClassCount(){this.totalClasses+=1;}
 
 
 }
