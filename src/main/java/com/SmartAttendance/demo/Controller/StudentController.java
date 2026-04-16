@@ -5,6 +5,7 @@ import com.SmartAttendance.demo.DTO.StudentProfileDTO;
 import com.SmartAttendance.demo.Entities.Assignment;
 import com.SmartAttendance.demo.Entities.ClassRoom;
 import com.SmartAttendance.demo.Repository.AssignmentRepository;
+import com.SmartAttendance.demo.Repository.ClassRepository;
 import com.SmartAttendance.demo.Service.*;
 import com.cloudinary.utils.ObjectUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,6 +33,8 @@ public class StudentController {
     private AssignmentService assignmentService;
     @Autowired
     private CloudinaryService cloudinaryService;
+    @Autowired
+    private ClassRepository classRepository;
     @PreAuthorize("hasRole('STUDENT')")
     @PostMapping("/joinClass")
     public void joinClass(@RequestParam Long studentId,@RequestParam String classCode){
@@ -40,10 +43,13 @@ public class StudentController {
     @PreAuthorize("hasRole('STUDENT')")
     @PostMapping("/markAttendance")
     public void markAttendance(@RequestParam Long StudentId, @RequestParam Long classId, @RequestParam MultipartFile image){
+        ClassRoom classRoom=classRepository.findById(classId).orElseThrow();
+        if(!classRoom.isAttendanceOpen())return;
         attendanceService.markAttendance(StudentId,classId,image);
     }
     @GetMapping("/fetchDetails")
     public ResponseEntity<StudentProfileDTO> fetchStudentProfile(@RequestParam Long studentId, @RequestParam Long classId){
+
         StudentProfileDTO dto=studentProfileService.fetchProfile(studentId,classId);
         return ResponseEntity.ok(dto);
     }

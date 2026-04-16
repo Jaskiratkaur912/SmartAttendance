@@ -2,7 +2,9 @@ package com.SmartAttendance.demo.Controller;
 
 import com.SmartAttendance.demo.DTO.ClassDTO;
 import com.SmartAttendance.demo.Entities.Assignment;
+import com.SmartAttendance.demo.Entities.ClassRoom;
 import com.SmartAttendance.demo.Repository.AssignmentRepository;
+import com.SmartAttendance.demo.Repository.ClassRepository;
 import com.SmartAttendance.demo.Service.AttendanceService;
 import com.SmartAttendance.demo.Service.ClassService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,6 +23,8 @@ public class TeacherController {
     private AttendanceService attendanceService;
     @Autowired
     private AssignmentRepository assignmentRepository;
+    @Autowired
+    private ClassRepository classRepository;
     @PreAuthorize("hasRole('TEACHER')")
     @PostMapping("/createClass")
     public void createClass(@RequestParam Long id,@RequestParam String className){
@@ -35,6 +39,20 @@ public class TeacherController {
     public void postAssignment(@RequestBody Assignment assignment){
         assignmentRepository.save(assignment);
     }
-
+    @GetMapping("/fetchClasses")
+    public List<ClassRoom> fetchClass(@RequestParam Long teacherId){
+        return classService.fetchClasses(teacherId);
+    }
+    @PostMapping
+    public void openAttendance(@RequestParam Long classId){
+        ClassRoom classroom=classRepository.findById(classId).orElseThrow();
+        classroom.setAttendanceOpen(true);
+        classroom.incClassCount();
+    }
+    @PostMapping
+    public void closeAttendance(@RequestParam Long classId){
+        ClassRoom classRoom=classRepository.findById(classId).orElseThrow();
+        classRoom.setAttendanceOpen(false);
+    }
 
 }
