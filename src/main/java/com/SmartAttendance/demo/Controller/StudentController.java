@@ -44,6 +44,7 @@ public class StudentController {
     }
     @GetMapping("/fetchDetails")
     public ResponseEntity<StudentProfileDTO> fetchStudentProfile(@RequestParam Long studentId, @RequestParam Long classId){
+
         StudentProfileDTO dto=studentProfileService.fetchProfile(studentId,classId);
         return ResponseEntity.ok(dto);
     }

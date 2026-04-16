@@ -16,6 +16,7 @@ public class ClassRoom {
     private String classCode;
     @ManyToMany(mappedBy = "classesJoined")
     private List<User> enrolledStudents = new ArrayList<>();
+    private int totalClasses;
     public ClassRoom(){
 
     }

@@ -49,6 +49,11 @@ public class SecurityConfig {
                         .sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED)  // ← change this
                 )
                 .authorizeHttpRequests(auth -> auth
+                        .requestMatchers(
+                                "/oauth2/**",
+                                "/login/oauth2/**",
+                                "/error"
+                        ).permitAll()
                         .requestMatchers("/api/users/complete-registration").permitAll()
                         // ─── Teacher only endpoints ───
                         .requestMatchers("/api/class/create").hasRole("TEACHER")
