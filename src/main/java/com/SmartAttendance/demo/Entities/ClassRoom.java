@@ -1,5 +1,5 @@
 package com.SmartAttendance.demo.Entities;
-
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 
 import java.util.ArrayList;
@@ -15,6 +15,7 @@ import java.util.List;
         private Long teacherId;
         @Column(unique=true)
         private String classCode;
+        @JsonIgnore
         @ManyToMany(mappedBy = "classesJoined")
         private List<User> enrolledStudents = new ArrayList<>();
         private int totalClasses;
@@ -36,4 +37,10 @@ import java.util.List;
     public boolean isAttendanceOpen(){
         return this.attendanceOpen;
     }
+    public Long getClassId() { return classId; }
+    public String getClassName() { return className; }
+    public String getClassCode() { return classCode; }
+    public Long getTeacherId() { return teacherId; }
+    public int getTotalClasses() { return totalClasses; }
+    public List<User> getEnrolledStudents() { return enrolledStudents; }
 }

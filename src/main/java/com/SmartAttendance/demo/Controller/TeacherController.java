@@ -31,7 +31,7 @@ public class TeacherController {
         classService.createClass(id,className);
     }
     @GetMapping("/fetchClassAttendance")
-    public ResponseEntity<List<ClassDTO>> fetchClassAtt(@RequestParam Long classId){
+    public ResponseEntity<List<ClassDTO>> fetchClassAtt(@RequestParam("classId") Long classId){
         List<ClassDTO> classAtt=attendanceService.fetchClassAttendance(classId);
         return ResponseEntity.ok(classAtt);
     }
@@ -48,11 +48,18 @@ public class TeacherController {
         ClassRoom classroom=classRepository.findById(classId).orElseThrow();
         classroom.setAttendanceOpen(true);
         classroom.incClassCount();
+        classRepository.save(classroom);
     }
     @PostMapping("/closeAttendance")
     public void closeAttendance(@RequestParam Long classId){
         ClassRoom classRoom=classRepository.findById(classId).orElseThrow();
         classRoom.setAttendanceOpen(false);
+        classRepository.save(classRoom);
+    }
+    @GetMapping("/attendanceStatus")
+    public boolean getAttendanceStatus(@RequestParam Long classId){
+        ClassRoom classRoom=classRepository.findById(classId).orElseThrow();
+        return classRoom.isAttendanceOpen();
     }
 
 }
