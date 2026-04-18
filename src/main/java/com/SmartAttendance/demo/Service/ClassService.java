@@ -38,6 +38,6 @@ public class ClassService {
         return classRepository.findByClassCode(code).orElseThrow(()->new RuntimeException("Class not found!"));
     }
     public List<ClassRoom> fetchClasses(Long teacher_id){
-        return classRepository.findByTeacher_id(teacher_id);
+        return classRepository.findByTeacherId(teacher_id);
     }
 }

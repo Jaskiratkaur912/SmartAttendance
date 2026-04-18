@@ -58,6 +58,7 @@ public class OAuthSuccessHandler extends SimpleUrlAuthenticationSuccessHandler {
             Long id = user.getId();
 
             String token = jwtUtil.generateToken(id, email, role);
+            System.out.println("Token = " + token);
 
             String url =
                     "http://localhost:5173/oauth/callback?token=" + token + "&role=" + role;

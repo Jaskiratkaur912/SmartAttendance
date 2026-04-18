@@ -11,7 +11,8 @@ public class ClassRoom {
     @GeneratedValue(strategy= GenerationType.IDENTITY)
     private Long classId;
     private String className;
-    private Long teacher_id;
+    @Column(name = "teacher_id")
+    private Long teacherId;
     @Column(unique=true)
     private String classCode;
     @ManyToMany(mappedBy = "classesJoined")
@@ -21,9 +22,9 @@ public class ClassRoom {
     public ClassRoom(){
 
     }
-    public ClassRoom(String className, Long teacher_id){
+    public ClassRoom(String className, long teacherId){
         this.className=className;
-        this.teacher_id=teacher_id;
+        this.teacherId=teacherId;
     }
     public void setClassCode(String classCode){
         this.classCode=classCode;

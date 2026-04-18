@@ -11,6 +11,6 @@ import java.util.Optional;
 public interface ClassRepository extends JpaRepository<ClassRoom,Long>{
 
     boolean existsByClassCode(String code);
-    List<ClassRoom> findByTeacher_id(Long teacherId);
+    List<ClassRoom> findByTeacherId(Long teacherId);
     Optional<ClassRoom> findByClassCode(String code);
 }

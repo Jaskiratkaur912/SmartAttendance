@@ -43,13 +43,13 @@ public class TeacherController {
     public List<ClassRoom> fetchClass(@RequestParam Long teacherId){
         return classService.fetchClasses(teacherId);
     }
-    @PostMapping
+    @PostMapping("/openAttendance")
     public void openAttendance(@RequestParam Long classId){
         ClassRoom classroom=classRepository.findById(classId).orElseThrow();
         classroom.setAttendanceOpen(true);
         classroom.incClassCount();
     }
-    @PostMapping
+    @PostMapping("/closeAttendance")
     public void closeAttendance(@RequestParam Long classId){
         ClassRoom classRoom=classRepository.findById(classId).orElseThrow();
         classRoom.setAttendanceOpen(false);
