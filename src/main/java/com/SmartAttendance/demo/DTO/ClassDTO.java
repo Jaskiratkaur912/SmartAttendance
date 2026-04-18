@@ -10,4 +10,6 @@ public class ClassDTO {
         this.studentName=studentName;
         this.presentDates=presentDates;
     }
+    public String getStudentName() { return studentName; }
+    public List<LocalDate> getPresentDates() { return presentDates; }
 }

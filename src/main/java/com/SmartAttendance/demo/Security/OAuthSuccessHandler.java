@@ -27,45 +27,28 @@ public class OAuthSuccessHandler extends SimpleUrlAuthenticationSuccessHandler {
                                         Authentication authentication)
             throws IOException {
 
-        System.out.println("OAuth success reached");
-
         OAuth2User oauthUser = (OAuth2User) authentication.getPrincipal();
-
         String email = oauthUser.getAttribute("email");
         String name  = oauthUser.getAttribute("name");
 
-        System.out.println("Email = " + email);
-        System.out.println("Name = " + name);
-
         User user = userService.processOAuthUser(email, name);
 
-        System.out.println("User found in DB");
-        System.out.println("Status = " + user.getStatus());
-        System.out.println("Role = " + user.getRole());
-
         if ("INCOMPLETE".equals(user.getStatus())) {
-
-            String url =
-                    "http://localhost:5173/complete-registration?email=" + email;
-
-            System.out.println("Redirecting to: " + url);
-
-            response.sendRedirect(url);
-
+            // 🆕 New user → go to registration page
+            String redirectUrl = "http://localhost:5173/complete-registration?email=" + email;
+            response.sendRedirect(redirectUrl);
         } else {
+            // ✅ Existing user → go to dashboard
+            // we need to generate JWT token for this existing user
+            String role=user.getRole();
+            Long id=user.getId();
+            String token=jwtUtil.generateToken(id,email,role);
+            String url="http://localhost:5173/oauth/callback?token=" + token + "&role=" + role;
+            System.out.println(url);
+            response.sendRedirect(
+                    url
+            );
 
-            String role = user.getRole();
-            Long id = user.getId();
-
-            String token = jwtUtil.generateToken(id, email, role);
-            System.out.println("Token = " + token);
-
-            String url =
-                    "http://localhost:5173/oauth/callback?token=" + token + "&role=" + role;
-
-            System.out.println("Redirecting to: " + url);
-
-            response.sendRedirect(url);
         }
     }
 }

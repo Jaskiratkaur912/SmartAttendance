@@ -63,6 +63,11 @@ public class StudentController {
     public void submitAssignment(@RequestParam Long assignmentId,@RequestParam MultipartFile solution,@RequestParam Long studentId) throws IOException {
         assignmentService.submitAssignment(assignmentId,solution,studentId);
     }
+    @GetMapping("/attendanceStatus")
+    public boolean getAttendanceStatus(@RequestParam Long classId){
+        ClassRoom classRoom=classRepository.findById(classId).orElseThrow();
+        return classRoom.isAttendanceOpen();
+    }
 
     
 }
