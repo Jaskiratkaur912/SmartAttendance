@@ -16,7 +16,7 @@ public class UserController {
         this.userService = userService;
     }
     @PostMapping("/complete-registration")
-    public ResponseEntity<?> completeRegistration(@RequestParam String email,@RequestParam String role,@RequestParam MultipartFile image) throws Exception {
+    public ResponseEntity<?> completeRegistration(@RequestParam String email,@RequestParam String role,@RequestParam(required=false) MultipartFile image) throws Exception {
         String token = userService.completeRegistration(email, role, image);
         return ResponseEntity.ok(token);
     }
