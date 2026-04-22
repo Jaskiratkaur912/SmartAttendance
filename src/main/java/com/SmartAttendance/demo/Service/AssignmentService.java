@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Service
 
@@ -37,5 +38,8 @@ public class AssignmentService {
         User student=userRepository.findByUserId(studentId).orElseThrow();
         AssignmentSubmission submission=new AssignmentSubmission(assignment,student,url);
         assignmentSubmissionRepository.save(submission);
+    }
+    public List<Assignment> fetchAssignment(Long classId){
+        return assignmentRepository.findByClassId(classId);
     }
 }

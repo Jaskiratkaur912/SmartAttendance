@@ -42,10 +42,15 @@ public class StudentController {
     }
     @PreAuthorize("hasRole('STUDENT')")
     @PostMapping("/markAttendance")
-    public void markAttendance(@RequestParam Long StudentId, @RequestParam Long classId, @RequestParam MultipartFile image){
+    public ResponseEntity<String> markAttendance(@RequestParam Long StudentId, @RequestParam Long classId, @RequestParam MultipartFile image){
         ClassRoom classRoom=classRepository.findById(classId).orElseThrow();
-        if(!classRoom.isAttendanceOpen())return;
-        attendanceService.markAttendance(StudentId,classId,image);
+        if(!classRoom.isAttendanceOpen()) return ResponseEntity.badRequest().body("Attendance is not open");
+        try {
+            attendanceService.markAttendance(StudentId, classId, image);
+            return ResponseEntity.ok("Attendance marked successfully");
+        } catch (RuntimeException e) {
+            return ResponseEntity.status(400).body(e.getMessage());
+        }
     }
     @GetMapping("/fetchDetails")
     public ResponseEntity<StudentProfileDTO> fetchStudentProfile(@RequestParam Long studentId, @RequestParam Long classId){
@@ -67,6 +72,10 @@ public class StudentController {
     public boolean getAttendanceStatus(@RequestParam Long classId){
         ClassRoom classRoom=classRepository.findById(classId).orElseThrow();
         return classRoom.isAttendanceOpen();
+    }
+    @GetMapping("/getAssignments")
+    public List<Assignment> getAssignment(@RequestParam Long classId){
+        return assignmentService.fetchAssignment(classId);
     }
 
     

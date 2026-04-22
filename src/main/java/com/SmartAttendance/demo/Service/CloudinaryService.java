@@ -19,13 +19,17 @@ public class CloudinaryService {
 
     public String uploadFile(MultipartFile file, Long studentId) {
         try {
+            String originalName = file.getOriginalFilename(); // e.g. assignment.pdf
+
+            String publicId = "student_" + studentId + "_" + System.currentTimeMillis();
+
             Map result = cloudinary.uploader().upload(
                     file.getBytes(),
                     ObjectUtils.asMap(
                             "folder", "smart-attendance/assignments",
-                            "public_id", String.valueOf(studentId),
-                            "overwrite", true,
-                            "resource_type", "auto"   // 🔥 IMPORTANT
+                            "resource_type", "raw",
+                            "public_id", publicId,
+                            "format", originalName.substring(originalName.lastIndexOf(".") + 1) // 🔥 KEY FIX
                     )
             );
 

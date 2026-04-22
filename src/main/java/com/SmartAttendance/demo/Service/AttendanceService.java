@@ -92,8 +92,11 @@ public class AttendanceService {
 
             if (match) {
                 attendance.setIsPresent(AttEnum.PRESENT);
+                attendanceRepository.save(attendance);
             } else {
                 attendance.setIsPresent(AttEnum.ABSENT);
+                attendanceRepository.save(attendance);
+                throw new RuntimeException("Face verification failed. Attendance marked as absent.");
             }
 
             attendanceRepository.save(attendance);
