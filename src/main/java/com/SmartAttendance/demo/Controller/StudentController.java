@@ -73,6 +73,10 @@ public class StudentController {
         ClassRoom classRoom=classRepository.findById(classId).orElseThrow();
         return classRoom.isAttendanceOpen();
     }
+    @GetMapping("/getAssignments")
+    public List<Assignment> getAssignment(@RequestParam Long classId){
+        return assignmentService.fetchAssignment(classId);
+    }
 
     
 }
