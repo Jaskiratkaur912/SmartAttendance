@@ -12,6 +12,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @RestController
@@ -36,7 +37,11 @@ public class TeacherController {
         return ResponseEntity.ok(classAtt);
     }
     @PostMapping("/postAssignment")
-    public void postAssignment(@RequestBody Assignment assignment){
+    public void postAssignment(@RequestParam Long classId, @RequestParam String description, @RequestParam String deadline) {
+        Assignment assignment = new Assignment();
+        assignment.setClassId(classId);
+        assignment.setDescription(description);
+        assignment.setDeadline(LocalDateTime.parse(deadline));
         assignmentRepository.save(assignment);
     }
     @GetMapping("/fetchClasses")

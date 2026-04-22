@@ -14,4 +14,8 @@ public class StudentProfileDTO {
     }
     public String getStudentName() { return studentName; }
     public List<LocalDate> getAttendance() { return attendance; }
+
+    public int getTotalClasses() {
+        return totalClasses;
+    }
 }

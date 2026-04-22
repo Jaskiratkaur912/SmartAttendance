@@ -43,4 +43,7 @@ import java.util.List;
     public Long getTeacherId() { return teacherId; }
     public int getTotalClasses() { return totalClasses; }
     public List<User> getEnrolledStudents() { return enrolledStudents; }
+    public int getEnrolledStudentCnt(){
+            return getEnrolledStudents().size();
+    }
 }
