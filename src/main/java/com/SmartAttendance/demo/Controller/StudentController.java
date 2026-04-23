@@ -65,8 +65,15 @@ public class StudentController {
 
     }
     @PostMapping("/submitAssignment")
-    public void submitAssignment(@RequestParam Long assignmentId,@RequestParam MultipartFile solution,@RequestParam Long studentId) throws IOException {
-        assignmentService.submitAssignment(assignmentId,solution,studentId);
+    public ResponseEntity<String> submitAssignment(@RequestParam Long assignmentId,
+                                                   @RequestParam MultipartFile solution,
+                                                   @RequestParam Long studentId) {
+        try {
+            assignmentService.submitAssignment(assignmentId, solution, studentId);
+            return ResponseEntity.ok("Submitted successfully");
+        } catch (RuntimeException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
     }
     @GetMapping("/attendanceStatus")
     public boolean getAttendanceStatus(@RequestParam Long classId){
@@ -77,6 +84,9 @@ public class StudentController {
     public List<Assignment> getAssignment(@RequestParam Long classId){
         return assignmentService.fetchAssignment(classId);
     }
-
-    
+    @GetMapping("/assignmentStatus")
+    public boolean checkSubmission(@RequestParam Long assignmentId,
+                                   @RequestParam Long studentId) {
+        return assignmentService.hasSubmitted(assignmentId, studentId);
+    }
 }

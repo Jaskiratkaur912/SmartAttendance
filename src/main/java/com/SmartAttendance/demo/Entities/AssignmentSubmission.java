@@ -12,19 +12,25 @@ public class AssignmentSubmission {
     @JoinColumn(name = "assignment_id", nullable = false)
     private Assignment assignment;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "student_id", nullable = false)
     private User student;
     private String submissionUrl;
-    public AssignmentSubmission(){
+    private String originalFileName;
 
-    }
+    public AssignmentSubmission() {}
     public AssignmentSubmission(Assignment assignment,User student,String submissionUrl){
         this.assignment=assignment;
         this.student=student;
         this.submissionUrl=submissionUrl;
     }
+    public Long getSubmissionId() { return this.submissionId; }
+    public User getStudent() { return this.student; }
+    public String getSubmissionUrl() { return this.submissionUrl; }
+    public String getOriginalFileName() { return this.originalFileName; }
+
     public void setSubmissionUrl(String submissionUrl){
         this.submissionUrl=submissionUrl;
     }
+    public void setOriginalFileName(String originalFileName) { this.originalFileName = originalFileName; }
 }

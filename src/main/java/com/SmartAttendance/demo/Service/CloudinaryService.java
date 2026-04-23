@@ -19,24 +19,23 @@ public class CloudinaryService {
 
     public String uploadFile(MultipartFile file, Long studentId) {
         try {
-            String originalName = file.getOriginalFilename(); // e.g. assignment.pdf
-
-            String publicId = "student_" + studentId + "_" + System.currentTimeMillis();
+            String originalName = file.getOriginalFilename();
+            String publicId = "smart-attendance/assignments/" + studentId + "_" + System.currentTimeMillis() + "_" + originalName;
 
             Map result = cloudinary.uploader().upload(
                     file.getBytes(),
                     ObjectUtils.asMap(
-                            "folder", "smart-attendance/assignments",
-                            "resource_type", "raw",
                             "public_id", publicId,
-                            "format", originalName.substring(originalName.lastIndexOf(".") + 1) // 🔥 KEY FIX
+                            "resource_type", "raw"  // 🔥 IMPORTANT for pdf/doc
                     )
             );
 
-            return result.get("secure_url").toString();
+            String url = result.get("secure_url").toString();
+            System.out.println("UPLOAD URL: " + url);
+            return url;
 
         } catch (IOException e) {
-            throw new RuntimeException("Failed to upload file: " + e.getMessage());
+            throw new RuntimeException("Upload failed: " + e.getMessage());
         }
     }
 }

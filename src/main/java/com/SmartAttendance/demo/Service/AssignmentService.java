@@ -13,9 +13,9 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 
 @Service
-
 public class AssignmentService {
     @Autowired
     AssignmentRepository assignmentRepository;
@@ -26,20 +26,48 @@ public class AssignmentService {
     @Autowired
     AssignmentSubmissionRepository assignmentSubmissionRepository;
     @Transactional
-    public void submitAssignment(Long assignmentId, MultipartFile solution,Long studentId){
-        Assignment assignment=assignmentRepository.findById(assignmentId).orElseThrow();
+    public void submitAssignment(Long assignmentId, MultipartFile solution, Long studentId) {
+        Assignment assignment = assignmentRepository.findById(assignmentId).orElseThrow();
+        User student = userRepository.findByUserId(studentId).orElseThrow();
+        // 🚨 prevent multiple submissions
+        Optional<AssignmentSubmission> existing =
+                assignmentSubmissionRepository.findByAssignmentAndStudent(assignment, student);
+        if (existing.isPresent()) {
+            throw new RuntimeException("Already submitted!");
+        }
+        // 🚨 deadline check
         if (assignment.getDeadline() != null &&
                 LocalDateTime.now().isAfter(assignment.getDeadline())) {
-
             throw new RuntimeException("Deadline has passed. Submission not allowed.");
         }
-        String url=cloudinaryService.uploadFile(solution,studentId);
 
-        User student=userRepository.findByUserId(studentId).orElseThrow();
-        AssignmentSubmission submission=new AssignmentSubmission(assignment,student,url);
+        String url = cloudinaryService.uploadFile(solution, studentId);
+        String originalName = solution.getOriginalFilename();
+
+        AssignmentSubmission submission =
+                new AssignmentSubmission(assignment, student, url);
+        submission.setOriginalFileName(originalName);
         assignmentSubmissionRepository.save(submission);
     }
-    public List<Assignment> fetchAssignment(Long classId){
+
+    // ✅ FETCH ASSIGNMENTS (existing)
+    public List<Assignment> fetchAssignment(Long classId) {
         return assignmentRepository.findByClassId(classId);
+    }
+
+    // ✅ TEACHER: get all submissions
+    public List<AssignmentSubmission> getSubmissions(Long assignmentId) {
+        return assignmentSubmissionRepository
+                .findByAssignment_Id(assignmentId);
+    }
+
+    // ✅ STUDENT: check submission status
+    public boolean hasSubmitted(Long assignmentId, Long studentId) {
+        Assignment assignment = assignmentRepository.findById(assignmentId).orElseThrow();
+        User student = userRepository.findByUserId(studentId).orElseThrow();
+
+        return assignmentSubmissionRepository
+                .findByAssignmentAndStudent(assignment, student)
+                .isPresent();
     }
 }

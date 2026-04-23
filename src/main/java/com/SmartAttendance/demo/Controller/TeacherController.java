@@ -3,6 +3,7 @@ package com.SmartAttendance.demo.Controller;
 import com.SmartAttendance.demo.DTO.ClassDTO;
 import com.SmartAttendance.demo.Entities.Assignment;
 import com.SmartAttendance.demo.Entities.ClassRoom;
+import com.SmartAttendance.demo.Entities.AssignmentSubmission;
 import com.SmartAttendance.demo.Repository.AssignmentRepository;
 import com.SmartAttendance.demo.Repository.ClassRepository;
 import com.SmartAttendance.demo.Service.AssignmentService;
@@ -72,6 +73,10 @@ public class TeacherController {
     @GetMapping("/getAssignment")
     public List<Assignment> fetchAssignment(@RequestParam Long classId){
         return assignmentService.fetchAssignment(classId);
+    }
+    @GetMapping("/assignments/{id}/submissions")
+    public List<AssignmentSubmission> getSubmissions(@PathVariable Long id) {
+        return assignmentService.getSubmissions(id);
     }
 
 }
