@@ -5,6 +5,7 @@ import com.SmartAttendance.demo.Entities.Assignment;
 import com.SmartAttendance.demo.Entities.ClassRoom;
 import com.SmartAttendance.demo.Repository.AssignmentRepository;
 import com.SmartAttendance.demo.Repository.ClassRepository;
+import com.SmartAttendance.demo.Service.AssignmentService;
 import com.SmartAttendance.demo.Service.AttendanceService;
 import com.SmartAttendance.demo.Service.ClassService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,6 +27,8 @@ public class TeacherController {
     private AssignmentRepository assignmentRepository;
     @Autowired
     private ClassRepository classRepository;
+    @Autowired
+    private AssignmentService assignmentService;
     @PreAuthorize("hasRole('TEACHER')")
     @PostMapping("/createClass")
     public void createClass(@RequestParam Long id,@RequestParam String className){
@@ -65,6 +68,10 @@ public class TeacherController {
     public boolean getAttendanceStatus(@RequestParam Long classId){
         ClassRoom classRoom=classRepository.findById(classId).orElseThrow();
         return classRoom.isAttendanceOpen();
+    }
+    @GetMapping("/getAssignment")
+    public List<Assignment> fetchAssignment(@RequestParam Long classId){
+        return assignmentService.fetchAssignment(classId);
     }
 
 }
