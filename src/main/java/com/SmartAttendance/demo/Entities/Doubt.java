@@ -35,4 +35,11 @@ public class Doubt {
     public Long getStudentId(){
         return this.studentId;
     }
+    public void setQuestion(String question) {
+        this.question = question;
+    }
+
+    public void setStudentId(Long studentId) {
+        this.studentId = studentId;
+    }
 }
