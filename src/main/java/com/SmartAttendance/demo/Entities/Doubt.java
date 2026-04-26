@@ -1,6 +1,6 @@
 package com.SmartAttendance.demo.Entities;
 
-import jakarta.persistence.Id;
+import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.time.LocalDateTime;
@@ -35,11 +35,25 @@ public class Doubt {
     public Long getStudentId(){
         return this.studentId;
     }
+    public Long getAssignmentId(){
+        return this.assignmentId;
+    }
     public void setQuestion(String question) {
         this.question = question;
     }
 
     public void setStudentId(Long studentId) {
         this.studentId = studentId;
+    }
+    public String getId() {
+        return this.id;
+    }
+
+    public String getResolution() {
+        return this.resolution;
+    }
+
+    public LocalDateTime getCreatedAt() {
+        return this.createdAt;
     }
 }
