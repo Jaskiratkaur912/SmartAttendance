@@ -29,5 +29,10 @@ public class Doubt {
     }
     public void setAssignmentId(Long id){this.assignmentId=id;}
     public void setCreatedAt(LocalDateTime createdAt){this.createdAt=createdAt;}
-
+    public String getQuestion(){
+        return this.question;
+    }
+    public Long getStudentId(){
+        return this.studentId;
+    }
 }

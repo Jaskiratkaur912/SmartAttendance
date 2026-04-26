@@ -37,7 +37,7 @@ public class AttendanceService {
     @Autowired
     RestTemplate restTemplate;
     public void markAttendance(Long studId, Long classId, MultipartFile image){
-        User user=userRepository.findByUserId(studId).orElseThrow(()->new RuntimeException("User not found"));
+        User user=userRepository.findById(studId).orElseThrow(()->new RuntimeException("User not found"));
         ClassRoom classRoom=classRepository.findById(classId).orElseThrow(()->new RuntimeException("class not found"));
         //we now need to check if the student has marked the attendance for this class already
         LocalDate today=LocalDate.now();

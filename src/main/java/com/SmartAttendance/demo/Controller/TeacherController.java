@@ -4,8 +4,10 @@ import com.SmartAttendance.demo.DTO.ClassDTO;
 import com.SmartAttendance.demo.Entities.Assignment;
 import com.SmartAttendance.demo.Entities.ClassRoom;
 import com.SmartAttendance.demo.Entities.AssignmentSubmission;
+import com.SmartAttendance.demo.Entities.Doubt;
 import com.SmartAttendance.demo.Repository.AssignmentRepository;
 import com.SmartAttendance.demo.Repository.ClassRepository;
+import com.SmartAttendance.demo.Repository.DoubtRepository;
 import com.SmartAttendance.demo.Service.AssignmentService;
 import com.SmartAttendance.demo.Service.AttendanceService;
 import com.SmartAttendance.demo.Service.ClassService;
@@ -30,6 +32,8 @@ public class TeacherController {
     private ClassRepository classRepository;
     @Autowired
     private AssignmentService assignmentService;
+    @Autowired
+    private DoubtRepository doubtRepository;
     @PreAuthorize("hasRole('TEACHER')")
     @PostMapping("/createClass")
     public void createClass(@RequestParam Long id,@RequestParam String className){
@@ -77,6 +81,10 @@ public class TeacherController {
     @GetMapping("/assignments/{id}/submissions")
     public List<AssignmentSubmission> getSubmissions(@PathVariable Long id) {
         return assignmentService.getSubmissions(id);
+    }
+    @GetMapping("/getDoubts/{assignmentId}")
+    public List<Doubt> getDoubts(@PathVariable Long assignmentId){
+        return doubtRepository.findByAssignmentId(assignmentId);
     }
 
 }

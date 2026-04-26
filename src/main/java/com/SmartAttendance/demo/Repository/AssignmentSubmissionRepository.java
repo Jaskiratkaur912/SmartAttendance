@@ -14,5 +14,5 @@ public interface AssignmentSubmissionRepository extends JpaRepository<Assignment
     List<AssignmentSubmission> findByAssignment_Id(Long id);
 
     // 🔥 check if student already submitted
-    Optional<AssignmentSubmission> findByAssignmentAndStudent(Assignment assignment, User student);
+    List<AssignmentSubmission> findByAssignmentAndStudent(Assignment assignment, User student);
 }

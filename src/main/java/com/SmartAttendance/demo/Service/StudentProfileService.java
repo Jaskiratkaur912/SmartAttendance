@@ -31,7 +31,7 @@ public class StudentProfileService {
                 .toList();
         ClassRoom classRoom=classRepository.findById(classId).orElseThrow();
         int totalClasses=classRoom.getTotalClasses();
-        User user=userRepository.findByUserId(studentId).orElseThrow();
+        User user=userRepository.findById(studentId).orElseThrow();
         String studName=user.getName();
         StudentProfileDTO dto=new StudentProfileDTO(presentDates,studName,totalClasses);
         return dto;

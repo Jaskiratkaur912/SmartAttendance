@@ -30,4 +30,5 @@ public class Assignment {
     public void setClassId(Long classId) { this.classId = classId; }
     public void setDescription(String description) { this.description = description; }
     public void setDeadline(LocalDateTime deadline) { this.deadline = deadline; }
+
 }

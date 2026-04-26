@@ -28,11 +28,11 @@ public class AssignmentService {
     @Transactional
     public void submitAssignment(Long assignmentId, MultipartFile solution, Long studentId) {
         Assignment assignment = assignmentRepository.findById(assignmentId).orElseThrow();
-        User student = userRepository.findByUserId(studentId).orElseThrow();
+        User student = userRepository.findById(studentId).orElseThrow();
         // 🚨 prevent multiple submissions
-        Optional<AssignmentSubmission> existing =
+        List<AssignmentSubmission> existing =
                 assignmentSubmissionRepository.findByAssignmentAndStudent(assignment, student);
-        if (existing.isPresent()) {
+        if (existing.size()>0) {
             throw new RuntimeException("Already submitted!");
         }
         // 🚨 deadline check
@@ -64,10 +64,9 @@ public class AssignmentService {
     // ✅ STUDENT: check submission status
     public boolean hasSubmitted(Long assignmentId, Long studentId) {
         Assignment assignment = assignmentRepository.findById(assignmentId).orElseThrow();
-        User student = userRepository.findByUserId(studentId).orElseThrow();
+        User student = userRepository.findById(studentId).orElseThrow();
 
-        return assignmentSubmissionRepository
-                .findByAssignmentAndStudent(assignment, student)
-                .isPresent();
+        return !assignmentSubmissionRepository
+                .findByAssignmentAndStudent(assignment, student).isEmpty();
     }
 }

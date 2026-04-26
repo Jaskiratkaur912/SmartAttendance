@@ -127,7 +127,7 @@ public class UserService {
         return "User deleted successfully";
     }
     public List<ClassRoom> getEnrolledClassrooms(Long userId){
-        User user=userRepository.findByUserId(userId).orElseThrow();
+        User user=userRepository.findById(userId).orElseThrow();
         return user.getEnrolledClasses();
     }
 

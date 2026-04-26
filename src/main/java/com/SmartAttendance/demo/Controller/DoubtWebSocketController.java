@@ -20,6 +20,7 @@ public class DoubtWebSocketController {
     @SendTo("/topic/doubts/{assignmentId}")
     public Doubt handleDoubt(@DestinationVariable Long assignmentId,
                              Doubt message){
+        System.out.println("Received doubt: " + message.getQuestion() + " | studentId: " + message.getStudentId());
         message.setAssignmentId(assignmentId);
         message.setCreatedAt(LocalDateTime.now());
         message.setStatus(DoubtStatus.OPEN);
