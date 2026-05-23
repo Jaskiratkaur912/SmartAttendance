@@ -1,6 +1,6 @@
 package com.SmartAttendance.demo.Service;
 
-import com.SmartAttendance.demo.DTO.AttendanceEvent;
+import com.SmartAttendance.demo.KafkaEvent.AttendanceEvent;
 import com.SmartAttendance.demo.DTO.ClassDTO;
 import com.SmartAttendance.demo.Entities.AttEnum;
 import com.SmartAttendance.demo.Entities.Attendance;

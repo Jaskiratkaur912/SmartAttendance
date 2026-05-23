@@ -1,4 +1,4 @@
-package com.SmartAttendance.demo.DTO;
+package com.SmartAttendance.demo.KafkaEvent;
 
 public class AttendanceEvent {
     private Long studentId;
@@ -13,4 +13,6 @@ public class AttendanceEvent {
         this.timestamp = timestamp;
     }
     public Long getStudentId(){return this.studentId;}
+    public Long getClassId(){return this.classId;}
+    public String getStatus(){return this.status;}
 }
