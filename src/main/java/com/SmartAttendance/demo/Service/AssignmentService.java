@@ -50,18 +50,15 @@ public class AssignmentService {
         assignmentSubmissionRepository.save(submission);
     }
 
-    // ✅ FETCH ASSIGNMENTS (existing)
     public List<Assignment> fetchAssignment(Long classId) {
         return assignmentRepository.findByClassId(classId);
     }
 
-    // ✅ TEACHER: get all submissions
     public List<AssignmentSubmission> getSubmissions(Long assignmentId) {
         return assignmentSubmissionRepository
                 .findByAssignment_Id(assignmentId);
     }
 
-    // ✅ STUDENT: check submission status
     public boolean hasSubmitted(Long assignmentId, Long studentId) {
         Assignment assignment = assignmentRepository.findById(assignmentId).orElseThrow();
         User student = userRepository.findById(studentId).orElseThrow();
