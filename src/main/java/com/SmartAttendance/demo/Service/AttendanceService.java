@@ -1,5 +1,6 @@
 package com.SmartAttendance.demo.Service;
 
+import com.SmartAttendance.demo.DTO.AttendanceEvent;
 import com.SmartAttendance.demo.DTO.ClassDTO;
 import com.SmartAttendance.demo.Entities.AttEnum;
 import com.SmartAttendance.demo.Entities.Attendance;
@@ -14,6 +15,7 @@ import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
@@ -36,6 +38,8 @@ public class AttendanceService {
     ClassRepository classRepository;
     @Autowired
     RestTemplate restTemplate;
+    @Autowired
+    private KafkaTemplate<String, AttendanceEvent> kafkaTemplate;
     public void markAttendance(Long studId, Long classId, MultipartFile image){
         User user=userRepository.findById(studId).orElseThrow(()->new RuntimeException("User not found"));
         ClassRoom classRoom=classRepository.findById(classId).orElseThrow(()->new RuntimeException("class not found"));
@@ -100,6 +104,15 @@ public class AttendanceService {
             }
 
             attendanceRepository.save(attendance);
+            AttendanceEvent event = new AttendanceEvent(
+                    attendance.getUser().getId(),
+                    attendance.getClassRoom().getClassId(),
+                    attendance.getIsPresent().name(),
+                    System.currentTimeMillis()
+            );
+
+            kafkaTemplate.send("attendance.marked",
+                    String.valueOf(event.getStudentId()), event);
 
         } catch (Exception e) {
             throw new RuntimeException("Attendance failed: " + e.getMessage());

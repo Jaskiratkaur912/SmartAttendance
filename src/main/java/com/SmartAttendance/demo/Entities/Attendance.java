@@ -22,6 +22,7 @@ public class Attendance {
 
     private LocalDate date;
     private AttEnum isPresent;
+    public ClassRoom getClassRoom(){return this.classRoom;}
     public AttEnum getIsPresent(){
         return this.isPresent;
     }
