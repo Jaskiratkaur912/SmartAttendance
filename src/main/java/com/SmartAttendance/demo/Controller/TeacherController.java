@@ -67,6 +67,7 @@ public class TeacherController {
         classroom.incClassCount();
         classRepository.save(classroom);
     }
+
     @PostMapping("/closeAttendance")
     public void closeAttendance(@RequestParam Long classId){
         ClassRoom classRoom=classRepository.findById(classId).orElseThrow();
