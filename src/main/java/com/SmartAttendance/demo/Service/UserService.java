@@ -61,7 +61,7 @@ public class UserService {
             user.setImagePath(imageUrl);
 
             // 🔹 Call FastAPI
-            String url = "http://127.0.0.1:8000/register";
+            String url = "http://127.0.0.1:8000//generate-encoding";
 
             HttpHeaders headers = new HttpHeaders();
             headers.setContentType(MediaType.MULTIPART_FORM_DATA);

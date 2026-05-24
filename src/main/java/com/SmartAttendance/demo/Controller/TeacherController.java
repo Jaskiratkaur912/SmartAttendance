@@ -5,6 +5,7 @@ import com.SmartAttendance.demo.Entities.Assignment;
 import com.SmartAttendance.demo.Entities.ClassRoom;
 import com.SmartAttendance.demo.Entities.AssignmentSubmission;
 import com.SmartAttendance.demo.Entities.Doubt;
+import com.SmartAttendance.demo.KafkaEvent.SessionClosedEvent;
 import com.SmartAttendance.demo.Repository.AssignmentRepository;
 import com.SmartAttendance.demo.Repository.ClassRepository;
 import com.SmartAttendance.demo.Repository.DoubtRepository;
@@ -13,6 +14,7 @@ import com.SmartAttendance.demo.Service.AttendanceService;
 import com.SmartAttendance.demo.Service.ClassService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
@@ -34,6 +36,8 @@ public class TeacherController {
     private AssignmentService assignmentService;
     @Autowired
     private DoubtRepository doubtRepository;
+    @Autowired
+    private KafkaTemplate<String, SessionClosedEvent> kafkaTemplate;
     @PreAuthorize("hasRole('TEACHER')")
     @PostMapping("/createClass")
     public void createClass(@RequestParam Long id,@RequestParam String className){
@@ -68,6 +72,11 @@ public class TeacherController {
         ClassRoom classRoom=classRepository.findById(classId).orElseThrow();
         classRoom.setAttendanceOpen(false);
         classRepository.save(classRoom);
+        kafkaTemplate.send("session.closed",
+                String.valueOf(classId),
+                new SessionClosedEvent(classId));
+
+        System.out.println("📢 Session closed event published for classId=" + classId);
     }
     @GetMapping("/attendanceStatus")
     public boolean getAttendanceStatus(@RequestParam Long classId){

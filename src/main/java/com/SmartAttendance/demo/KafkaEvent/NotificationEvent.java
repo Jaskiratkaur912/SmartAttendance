@@ -17,4 +17,19 @@ public class NotificationEvent {
     public Long getStudentId(){return this.studentId;}
     public String getMessage(){return this.message;}
 
+    public void setStudentId(Long studentId) {
+        this.studentId = studentId;
+    }
+
+    public void setMessage(String message) {
+        this.message = message;
+    }
+
+    public void setTimestamp(long timestamp) {
+        this.timestamp = timestamp;
+    }
+
+    public void setType(String type) {
+        this.type = type;
+    }
 }

@@ -27,11 +27,16 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
+
 import java.time.LocalDateTime;
 @Service
 public class AttendanceService {
     @Autowired
     AttendanceRepository attendanceRepository;
+    @Autowired
+    private ObjectMapper objectMapper;
     @Autowired
     UserRepository userRepository;
     @Autowired
@@ -50,7 +55,7 @@ public class AttendanceService {
             throw new RuntimeException("Attendance already registered for today!");
         }
         try{
-            String url="http://127.0.0.1:8000/verify";
+            String url="http://127.0.0.1:8000/verify-face";
             HttpHeaders headers = new HttpHeaders();
             headers.setContentType(MediaType.MULTIPART_FORM_DATA);
 
@@ -63,10 +68,11 @@ public class AttendanceService {
                     return image.getOriginalFilename();
                 }
             });
-
+            if (user.getEmbeddings() == null) {
+                throw new RuntimeException("Face not registered. Please complete profile setup first.");
+            }
             // 🔹 stored embedding (VERY IMPORTANT)
             body.add("stored_embedding", user.getEmbeddings());
-
             HttpEntity<MultiValueMap<String, Object>> request =
                     new HttpEntity<>(body, headers);
 
@@ -103,16 +109,18 @@ public class AttendanceService {
                 throw new RuntimeException("Face verification failed. Attendance marked as absent.");
             }
 
-            attendanceRepository.save(attendance);
             AttendanceEvent event = new AttendanceEvent(
                     attendance.getUser().getId(),
                     attendance.getClassRoom().getClassId(),
                     attendance.getIsPresent().name(),
                     System.currentTimeMillis()
             );
-
-            kafkaTemplate.send("attendance.marked",
-                    String.valueOf(event.getStudentId()), event);
+            System.out.println("Publishing event:");
+            System.out.println("studentId = " + event.getStudentId());
+            System.out.println("classId   = " + event.getClassId());
+            System.out.println("status    = " + event.getStatus());
+                kafkaTemplate.send("attendance.marked",
+                        String.valueOf(event.getStudentId()), event);
 
         } catch (Exception e) {
             throw new RuntimeException("Attendance failed: " + e.getMessage());

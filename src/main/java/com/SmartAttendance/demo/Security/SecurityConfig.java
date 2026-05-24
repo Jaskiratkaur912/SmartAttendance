@@ -62,6 +62,7 @@ public class SecurityConfig {
                                 "/login/oauth2/**",
                                 "/error"
                         ).permitAll()
+                        .requestMatchers("/ws/**").permitAll()
 
                         // Public APIs
                         .requestMatchers(

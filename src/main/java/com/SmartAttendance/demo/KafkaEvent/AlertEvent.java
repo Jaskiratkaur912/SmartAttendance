@@ -15,4 +15,16 @@ public class AlertEvent {
     public Long getClassId(){return this.classId;}
     public Long getStudentId(){return this.studentId;}
     public double getRate(){return this.rate;}
+
+    public void setStudentId(Long studentId) {
+        this.studentId = studentId;
+    }
+
+    public void setClassId(Long classId) {
+        this.classId = classId;
+    }
+
+    public void setRate(double rate) {
+        this.rate = rate;
+    }
 }
