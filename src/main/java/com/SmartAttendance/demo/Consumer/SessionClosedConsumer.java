@@ -1,10 +1,12 @@
 package com.SmartAttendance.demo.Consumer;
 
+import com.SmartAttendance.demo.Entities.AttEnum;
 import com.SmartAttendance.demo.Entities.ClassRoom;
 import com.SmartAttendance.demo.Entities.User;
 import com.SmartAttendance.demo.KafkaEvent.AlertEvent;
 import com.SmartAttendance.demo.KafkaEvent.HeadCntEvent;
 import com.SmartAttendance.demo.KafkaEvent.SessionClosedEvent;
+import com.SmartAttendance.demo.Repository.AttendanceRepository;
 import com.SmartAttendance.demo.Repository.ClassRepository;
 import com.SmartAttendance.demo.Service.NotificationService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,6 +19,8 @@ import java.util.List;
 
 @Component
 public class SessionClosedConsumer {
+    @Autowired
+    private AttendanceRepository attendanceRepository;
     @Autowired
     private RedisTemplate<String, String> redisTemplate;
     @Autowired
@@ -35,37 +39,20 @@ public class SessionClosedConsumer {
             return;
         }
         List<Long> studentIds = classRepository.findEnrolledStudentIdsByClassId(classId);
-        long headCnt=0L;
+        long headCnt=attendanceRepository.countPresentToday(classId);
+
         for (Long studentId : studentIds) {
-            String key        = "att:" + studentId + ":" + classId;
-            String sessionKey = "session:" + classId + ":present:" + studentId;
-            String alertKey   = "alerted:" + studentId + ":" + classId;
-
-            // Always increment total for this session
-            redisTemplate.opsForHash().increment(key, "total", 1);
-
-            // Only increment present if they marked attendance THIS session
-            if (Boolean.TRUE.equals(redisTemplate.hasKey(sessionKey))) {
-                //we can increment the headCount for the session
-                headCnt+=1;
-                redisTemplate.opsForHash().increment(key, "present", 1);
-                redisTemplate.delete(sessionKey); // cleanup
-            }
-
-            String totalStr   = (String) redisTemplate.opsForHash().get(key, "total");
-            String presentStr = (String) redisTemplate.opsForHash().get(key, "present");
-            long total   = totalStr != null ? Long.parseLong(totalStr) : 0;
-            long present = presentStr != null ? Long.parseLong(presentStr) : 0;
+            long total = attendanceRepository.countTotalSessionsByClassId(classId);
+            long present = attendanceRepository.countByUserIdAndClassIdAndIsPresent(studentId, classId, AttEnum.PRESENT);
 
             double rate = total == 0 ? 0.0 : (present * 100.0) / total;
 
-            if (rate < 75.0 && !Boolean.TRUE.equals(redisTemplate.hasKey(alertKey))) {
+            System.out.println("📊 studentId=" + studentId + " total=" + total + " present=" + present + " rate=" + rate);
+
+            if (rate < 75.0) {
                 System.out.println("🚨 Alerting studentId=" + studentId + " rate=" + rate);
-                kafkaTemplate.send(
-                        "attendance.alert",
-                        String.valueOf(studentId),
-                        new AlertEvent(studentId, classId, rate)
-                );
+                kafkaTemplate.send("attendance.alert", String.valueOf(studentId), new AlertEvent(studentId, classId, rate));
+
             }
         }
         //now we have the headCnt and we need to notify the teacher about the same
