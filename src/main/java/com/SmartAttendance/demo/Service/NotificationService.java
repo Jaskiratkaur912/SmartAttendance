@@ -1,5 +1,6 @@
 package com.SmartAttendance.demo.Service;
 
+import com.SmartAttendance.demo.KafkaEvent.HeadCntEvent;
 import com.SmartAttendance.demo.KafkaEvent.NotificationEvent;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
@@ -14,5 +15,8 @@ public class NotificationService {
                 "/topic/notification/" + notification.getStudentId(),
                 notification
         );
+    }
+    public void sendInAppHeadCntNotif(HeadCntEvent headCntEvent){
+
     }
 }

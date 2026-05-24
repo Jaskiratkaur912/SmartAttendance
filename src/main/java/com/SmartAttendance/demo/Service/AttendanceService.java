@@ -126,9 +126,6 @@ public class AttendanceService {
             throw new RuntimeException("Attendance failed: " + e.getMessage());
 
         }
-
-
-
     }
     public List<ClassDTO> fetchClassAttendance(Long classId) {
 
@@ -175,4 +172,6 @@ public List<Attendance> getMyAttendance(String email) {
         .orElseThrow(() -> new RuntimeException("User not found"));
     return attendanceRepository.findByUser(user);
 }
+
+
 }

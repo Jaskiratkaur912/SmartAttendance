@@ -38,9 +38,11 @@ public class SessionClosedConsumer {
 
             // Always increment total for this session
             redisTemplate.opsForHash().increment(key, "total", 1);
-
+            int headCnt=0;
             // Only increment present if they marked attendance THIS session
             if (Boolean.TRUE.equals(redisTemplate.hasKey(sessionKey))) {
+                //we can increment the headCount for the session
+                headCnt+=1;
                 redisTemplate.opsForHash().increment(key, "present", 1);
                 redisTemplate.delete(sessionKey); // cleanup
             }
@@ -61,5 +63,7 @@ public class SessionClosedConsumer {
                 );
             }
         }
+        //now we have the headCnt and we need to notify the teacher about the same
+
     }
 }

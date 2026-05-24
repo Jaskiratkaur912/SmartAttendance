@@ -76,7 +76,6 @@ public class TeacherController {
         kafkaTemplate.send("session.closed",
                 String.valueOf(classId),
                 new SessionClosedEvent(classId));
-
         System.out.println("📢 Session closed event published for classId=" + classId);
     }
     @GetMapping("/attendanceStatus")
@@ -84,7 +83,6 @@ public class TeacherController {
         ClassRoom classRoom=classRepository.findById(classId).orElseThrow();
         return classRoom.isAttendanceOpen();
     }
-
     @GetMapping("/getAssignment")
     public List<Assignment> fetchAssignment(@RequestParam Long classId){
         return assignmentService.fetchAssignment(classId);
