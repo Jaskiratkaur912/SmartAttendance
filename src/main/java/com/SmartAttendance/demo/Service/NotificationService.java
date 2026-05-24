@@ -17,6 +17,6 @@ public class NotificationService {
         );
     }
     public void sendInAppHeadCntNotif(HeadCntEvent headCntEvent){
-
+        messagingTemplate.convertAndSend("/topic/teacher/" + headCntEvent.getClassId(),headCntEvent);
     }
 }

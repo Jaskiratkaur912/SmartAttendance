@@ -7,7 +7,6 @@ import org.springframework.kafka.config.TopicBuilder;
 
 @Configuration
 public class KafkaConfig {
-
     @Bean
     public NewTopic attendanceMarkedTopic() {
         return TopicBuilder.name("attendance.marked")

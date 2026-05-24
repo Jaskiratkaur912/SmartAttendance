@@ -3,8 +3,10 @@ package com.SmartAttendance.demo.Consumer;
 import com.SmartAttendance.demo.Entities.ClassRoom;
 import com.SmartAttendance.demo.Entities.User;
 import com.SmartAttendance.demo.KafkaEvent.AlertEvent;
+import com.SmartAttendance.demo.KafkaEvent.HeadCntEvent;
 import com.SmartAttendance.demo.KafkaEvent.SessionClosedEvent;
 import com.SmartAttendance.demo.Repository.ClassRepository;
+import com.SmartAttendance.demo.Service.NotificationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.kafka.annotation.KafkaListener;
@@ -21,6 +23,8 @@ public class SessionClosedConsumer {
     private ClassRepository classRepository;
     @Autowired
     private KafkaTemplate<String, AlertEvent> kafkaTemplate;
+    @Autowired
+    private NotificationService notificationService;
     @KafkaListener(topics = "session.closed", groupId = "session-closed-group")
     public void consume(SessionClosedEvent sessionClosedEvent){
         Long classId=sessionClosedEvent.getClassId();
@@ -31,6 +35,7 @@ public class SessionClosedConsumer {
             return;
         }
         List<Long> studentIds = classRepository.findEnrolledStudentIdsByClassId(classId);
+        long headCnt=0L;
         for (Long studentId : studentIds) {
             String key        = "att:" + studentId + ":" + classId;
             String sessionKey = "session:" + classId + ":present:" + studentId;
@@ -38,7 +43,7 @@ public class SessionClosedConsumer {
 
             // Always increment total for this session
             redisTemplate.opsForHash().increment(key, "total", 1);
-            int headCnt=0;
+
             // Only increment present if they marked attendance THIS session
             if (Boolean.TRUE.equals(redisTemplate.hasKey(sessionKey))) {
                 //we can increment the headCount for the session
@@ -64,6 +69,6 @@ public class SessionClosedConsumer {
             }
         }
         //now we have the headCnt and we need to notify the teacher about the same
-
+        notificationService.sendInAppHeadCntNotif(new HeadCntEvent(classId,headCnt,studentIds.size()-headCnt,(long)studentIds.size()));
     }
 }
