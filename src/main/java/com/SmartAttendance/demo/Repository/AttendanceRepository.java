@@ -9,6 +9,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 @Repository
@@ -26,5 +27,25 @@ public interface AttendanceRepository extends JpaRepository<Attendance,Long> {
 
     @Query("SELECT COUNT(a) FROM Attendance a WHERE a.classRoom.classId = :classId AND a.date = CURRENT_DATE AND a.isPresent = com.SmartAttendance.demo.Entities.AttEnum.PRESENT")
     long countPresentToday(@Param("classId") Long classId);
+
+    @Query("SELECT COUNT(a) FROM Attendance a " +
+            "WHERE a.classId = :classId " +
+            "AND a.createdAt >= :cutoff")
+    long countSessionsInLastNDays(
+            @Param("classId") Long classId,
+            @Param("cutoff") LocalDateTime cutoff
+    );
+
+    @Query("SELECT COUNT(a) FROM Attendance a " +
+            "WHERE a.userId = :studId " +
+            "AND a.classId = :classId " +
+            "AND a.status = :status " +
+            "AND a.createdAt >= :cutoff")
+    long countAttendedInLastNDays(
+            @Param("studId") Long studId,
+            @Param("classId") Long classId,
+            @Param("status") AttEnum status,
+            @Param("cutoff") LocalDateTime cutoff
+    );
 }
 

@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.stereotype.Component;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 import static java.lang.Math.floor;
@@ -20,7 +21,9 @@ public class AnalyticsConsumer {
     private AttendanceRepository attendanceRepository;
     @KafkaListener(topics = "session.closed",
             groupId = "analytics-service")
+
     public void consume(SessionClosedEvent sessionClosedEvent){
+        LocalDateTime cutOff = LocalDateTime.now().minusDays(14);
         //this consumer basically loops over all the students to provide them insights on their attendance trends
         Long classId=sessionClosedEvent.getClassId();
         List<Long> enrolledStudents=classRepository.findEnrolledStudentIdsByClassId(classId);
@@ -30,6 +33,13 @@ public class AnalyticsConsumer {
             long attended=attendanceRepository.countByUserIdAndClassIdAndIsPresent(studId,classId, AttEnum.PRESENT);
             long total=attendanceRepository.countTotalSessionsByClassId(classId);
             long missable = (long)floor((attended - 0.75 * total) / 0.25);
+            double attendancePct = (double) attended / total * 100;
+            //adding velocity analytics
+            long recentTotal = attendanceRepository.countSessionsInLastNDays(classId, cutOff);
+            long recentAttended = attendanceRepository.countAttendedInLastNDays(studId, classId, AttEnum.PRESENT,cutOff);
+            double recentPct = (double) recentAttended / recentTotal * 100;
+            double overallPct = attendancePct;
+
         }
     }
 
