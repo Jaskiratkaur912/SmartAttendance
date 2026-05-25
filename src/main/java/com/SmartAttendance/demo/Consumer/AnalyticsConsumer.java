@@ -1,6 +1,7 @@
 package com.SmartAttendance.demo.Consumer;
 
 import com.SmartAttendance.demo.Entities.AttEnum;
+import com.SmartAttendance.demo.Entities.TrendEnum;
 import com.SmartAttendance.demo.KafkaEvent.SessionClosedEvent;
 import com.SmartAttendance.demo.Repository.AttendanceRepository;
 import com.SmartAttendance.demo.Repository.ClassRepository;
@@ -39,6 +40,11 @@ public class AnalyticsConsumer {
             long recentAttended = attendanceRepository.countAttendedInLastNDays(studId, classId, AttEnum.PRESENT,cutOff);
             double recentPct = (double) recentAttended / recentTotal * 100;
             double overallPct = attendancePct;
+            double velocity = recentPct - overallPct;
+            TrendEnum trend = velocity > 3 ? TrendEnum.IMPROVING
+                    : velocity < -3 ? TrendEnum.SLIPPING
+                    : TrendEnum.STABLE;
+
 
         }
     }
