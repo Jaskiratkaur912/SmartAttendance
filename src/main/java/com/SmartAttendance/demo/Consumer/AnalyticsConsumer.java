@@ -44,6 +44,7 @@ public class AnalyticsConsumer {
             TrendEnum trend = velocity > 3 ? TrendEnum.IMPROVING
                     : velocity < -3 ? TrendEnum.SLIPPING
                     : TrendEnum.STABLE;
+            //wrapping al this data in AnalyticsDTO
 
 
         }

@@ -47,5 +47,28 @@ public interface AttendanceRepository extends JpaRepository<Attendance,Long> {
             @Param("status") AttEnum status,
             @Param("cutoff") LocalDateTime cutoff
     );
+    @Query(value = """
+        SELECT 
+            YEARWEEK(attendance_date, 1) as weekNum,
+
+            ROUND(
+                (SUM(CASE WHEN present = true THEN 1 ELSE 0 END) * 100.0)
+                / COUNT(*),
+                2
+            ) as attendancePercentage
+
+        FROM attendance
+        WHERE student_id = :studentId
+          AND class_id = :classId
+
+        GROUP BY YEARWEEK(attendance_date, 1)
+        ORDER BY weekNum DESC
+        LIMIT :weeks
+        """, nativeQuery = true)
+    List<Object[]> getWeeklyAttendanceRaw(
+            @Param("studentId") Long studentId,
+            @Param("classId") Long classId,
+            @Param("weeks") int weeks
+    );
 }
 
