@@ -1,8 +1,9 @@
 package com.SmartAttendance.demo.Consumer;
 
-import com.SmartAttendance.demo.DTO.SubjectAnalytics;
+
 
 import com.SmartAttendance.demo.Entities.AttEnum;
+import com.SmartAttendance.demo.Entities.SubjectAnalytics;
 import com.SmartAttendance.demo.Entities.TrendEnum;
 import com.SmartAttendance.demo.KafkaEvent.SessionClosedEvent;
 import com.SmartAttendance.demo.Repository.AttendanceRepository;

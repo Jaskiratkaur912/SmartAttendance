@@ -75,8 +75,8 @@ public class SecurityConfig {
                         .hasRole("TEACHER")
 
                         // Student
-                        .requestMatchers("/student/**")
-                        .hasRole("STUDENT")
+                        .requestMatchers("/student/fetchAnalytics").permitAll()
+
 
                         // everything else
                         .anyRequest().authenticated()
@@ -86,7 +86,7 @@ public class SecurityConfig {
                         .successHandler(successHandler)
                 )
 
-                .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
+            .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
     }

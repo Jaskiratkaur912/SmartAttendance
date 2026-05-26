@@ -2,9 +2,10 @@ package com.SmartAttendance.demo.Controller;
 
 import com.SmartAttendance.demo.Config.CloudinaryConfig;
 import com.SmartAttendance.demo.DTO.StudentProfileDTO;
-import com.SmartAttendance.demo.DTO.SubjectAnalytics;
+
 import com.SmartAttendance.demo.Entities.Assignment;
 import com.SmartAttendance.demo.Entities.ClassRoom;
+import com.SmartAttendance.demo.Entities.SubjectAnalytics;
 import com.SmartAttendance.demo.Repository.AssignmentRepository;
 import com.SmartAttendance.demo.Repository.ClassRepository;
 import com.SmartAttendance.demo.Repository.SubjectAnalyticsRepository;
@@ -22,6 +23,7 @@ import java.util.Map;
 
 @RestController
 @RequestMapping("/student")
+@CrossOrigin(origins = "http://localhost:5173")
 public class StudentController {
     @Autowired
     private EnrollmentService enrollmentService;

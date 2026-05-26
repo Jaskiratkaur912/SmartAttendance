@@ -1,17 +1,18 @@
 package com.SmartAttendance.demo.Service;
 
-import com.SmartAttendance.demo.DTO.SubjectAnalytics;
 import com.SmartAttendance.demo.Entities.AttEnum;
+import com.SmartAttendance.demo.Entities.SubjectAnalytics;
 import com.SmartAttendance.demo.Entities.TrendEnum;
 import com.SmartAttendance.demo.Repository.AttendanceRepository;
 import com.SmartAttendance.demo.Repository.ClassRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.List;
 
 import static java.lang.Math.floor;
-
+@Service
 public class AnalyticService {
     @Autowired
     AttendanceRepository attendanceRepository;
