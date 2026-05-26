@@ -1,6 +1,6 @@
 package com.SmartAttendance.demo.Service;
 
-import com.SmartAttendance.demo.DTO.SubjectAnalyticsDTO;
+import com.SmartAttendance.demo.DTO.SubjectAnalytics;
 import com.SmartAttendance.demo.Entities.AttEnum;
 import com.SmartAttendance.demo.Entities.TrendEnum;
 import com.SmartAttendance.demo.Repository.AttendanceRepository;
@@ -14,7 +14,7 @@ import static java.lang.Math.floor;
 public class AnalyticService {
     @Autowired
     AttendanceRepository attendanceRepository;
-    public SubjectAnalyticsDTO buildAnalytics(Long studId,Long classId){
+    public SubjectAnalytics buildAnalytics(Long studId, Long classId){
         LocalDateTime cutOff = LocalDateTime.now().minusDays(14);
         Long attended=attendanceRepository.countByUserIdAndClassIdAndIsPresent(studId,classId, AttEnum.PRESENT);
         long total=attendanceRepository.countTotalSessionsByClassId(classId);
@@ -35,7 +35,7 @@ public class AnalyticService {
                                 studId,
                                 classId
                         );
-        SubjectAnalyticsDTO subjectAnalyticsDTO=new SubjectAnalyticsDTO();
+        SubjectAnalytics subjectAnalyticsDTO=new SubjectAnalytics();
         subjectAnalyticsDTO.setAttended(attended);
         subjectAnalyticsDTO.setClassId(classId);
         subjectAnalyticsDTO.setMissable(missable);

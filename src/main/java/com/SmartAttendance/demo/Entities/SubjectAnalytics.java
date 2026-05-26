@@ -15,7 +15,7 @@ import java.util.List;
         )
 )
 @Data
-public class SubjectAnalyticsDTO {
+public class SubjectAnalytics {
     private Long studentId;
     private Long classId;
     private long attended;
