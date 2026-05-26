@@ -3,6 +3,8 @@ package com.SmartAttendance.demo.Repository;
 import com.SmartAttendance.demo.DTO.SubjectAnalytics;
 import org.springframework.data.jpa.repository.JpaRepository;
 
-public interface SubjectAnalyticsRepository extends JpaRepository<SubjectAnalytics,Long> {
+import java.util.Optional;
 
+public interface SubjectAnalyticsRepository extends JpaRepository<SubjectAnalytics,Long> {
+    Optional<SubjectAnalytics> findByStudentIdAndClassId(Long studentId,Long classId);
 }

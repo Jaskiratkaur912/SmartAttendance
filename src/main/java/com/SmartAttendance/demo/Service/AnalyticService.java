@@ -4,6 +4,7 @@ import com.SmartAttendance.demo.DTO.SubjectAnalytics;
 import com.SmartAttendance.demo.Entities.AttEnum;
 import com.SmartAttendance.demo.Entities.TrendEnum;
 import com.SmartAttendance.demo.Repository.AttendanceRepository;
+import com.SmartAttendance.demo.Repository.ClassRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.time.LocalDateTime;
@@ -14,6 +15,8 @@ import static java.lang.Math.floor;
 public class AnalyticService {
     @Autowired
     AttendanceRepository attendanceRepository;
+    @Autowired
+    ClassRepository classRepository;
     public SubjectAnalytics buildAnalytics(Long studId, Long classId){
         LocalDateTime cutOff = LocalDateTime.now().minusDays(14);
         Long attended=attendanceRepository.countByUserIdAndClassIdAndIsPresent(studId,classId, AttEnum.PRESENT);
@@ -35,9 +38,14 @@ public class AnalyticService {
                                 studId,
                                 classId
                         );
+        String className = classRepository
+                .findById(classId)
+                .orElseThrow()
+                .getClassName();
         SubjectAnalytics subjectAnalyticsDTO=new SubjectAnalytics();
         subjectAnalyticsDTO.setAttended(attended);
         subjectAnalyticsDTO.setClassId(classId);
+        subjectAnalyticsDTO.setClassName(className);
         subjectAnalyticsDTO.setMissable(missable);
         subjectAnalyticsDTO.setTotal(total);
         subjectAnalyticsDTO.setTrend(trend);

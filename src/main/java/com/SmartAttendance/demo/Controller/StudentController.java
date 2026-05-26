@@ -2,10 +2,12 @@ package com.SmartAttendance.demo.Controller;
 
 import com.SmartAttendance.demo.Config.CloudinaryConfig;
 import com.SmartAttendance.demo.DTO.StudentProfileDTO;
+import com.SmartAttendance.demo.DTO.SubjectAnalytics;
 import com.SmartAttendance.demo.Entities.Assignment;
 import com.SmartAttendance.demo.Entities.ClassRoom;
 import com.SmartAttendance.demo.Repository.AssignmentRepository;
 import com.SmartAttendance.demo.Repository.ClassRepository;
+import com.SmartAttendance.demo.Repository.SubjectAnalyticsRepository;
 import com.SmartAttendance.demo.Service.*;
 import com.cloudinary.utils.ObjectUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,6 +37,8 @@ public class StudentController {
     private CloudinaryService cloudinaryService;
     @Autowired
     private ClassRepository classRepository;
+    @Autowired
+    private SubjectAnalyticsRepository subjectAnalyticsRepository;
     @PreAuthorize("hasRole('STUDENT')")
     @PostMapping("/joinClass")
     public void joinClass(@RequestParam Long studentId,@RequestParam String classCode){
@@ -88,5 +92,19 @@ public class StudentController {
     public boolean checkSubmission(@RequestParam Long assignmentId,
                                    @RequestParam Long studentId) {
         return assignmentService.hasSubmitted(assignmentId, studentId);
+    }
+    @GetMapping("/fetchAnalytics")
+    public ResponseEntity<SubjectAnalytics> fetchAnalytics(
+            @RequestParam Long studentId,
+            @RequestParam Long classId
+    ) {
+
+        return subjectAnalyticsRepository
+                .findByStudentIdAndClassId(
+                        studentId,
+                        classId
+                )
+                .map(ResponseEntity::ok)
+                .orElse(ResponseEntity.notFound().build());
     }
 }

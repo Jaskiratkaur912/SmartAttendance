@@ -18,6 +18,7 @@ import java.util.List;
 public class SubjectAnalytics {
     private Long studentId;
     private Long classId;
+    private String className;
     private long attended;
     private long total;
     private double attendancePct;
