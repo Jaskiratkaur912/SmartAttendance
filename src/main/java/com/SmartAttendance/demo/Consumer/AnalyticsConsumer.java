@@ -31,16 +31,27 @@ public class AnalyticsConsumer {
             groupId = "analytics-service")
 
     public void consume(SessionClosedEvent sessionClosedEvent){
+        System.out.println("Kafka event received for classId=" + sessionClosedEvent.getClassId());
         LocalDateTime cutOff = LocalDateTime.now().minusDays(14);
         //this consumer basically loops over all the students to provide them insights on their attendance trends
         Long classId=sessionClosedEvent.getClassId();
         List<Long> enrolledStudents=classRepository.findEnrolledStudentIdsByClassId(classId);
+        System.out.println("Enrolled students count: " + enrolledStudents.size());
         for(Long studId:enrolledStudents){
+            System.out.println("Building analytics for studentId=" + studId);
             //for this student we need to give insights such as:
             // the number of classes that he/she can miss
-            SubjectAnalytics dto=analyticService.buildAnalytics(studId,classId);
+            try {
+                SubjectAnalytics dto = analyticService.buildAnalytics(studId, classId);
+                subjectAnalyticsRepository.save(dto);
+                System.out.println("Saved analytics for studentId=" + studId);
+
+            } catch (Exception e) {
+                System.out.println("FAILED for studentId=" + studId);
+                e.printStackTrace();
+            }
             // we now have to persist this dto
-            subjectAnalyticsRepository.save(dto);
+
         }
     }
 

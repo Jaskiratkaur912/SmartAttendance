@@ -45,6 +45,7 @@ public class AnalyticService {
                 .getClassName();
         SubjectAnalytics subjectAnalyticsDTO=new SubjectAnalytics();
         subjectAnalyticsDTO.setAttended(attended);
+        subjectAnalyticsDTO.setStudentId(studId);
         subjectAnalyticsDTO.setClassId(classId);
         subjectAnalyticsDTO.setClassName(className);
         subjectAnalyticsDTO.setMissable(missable);

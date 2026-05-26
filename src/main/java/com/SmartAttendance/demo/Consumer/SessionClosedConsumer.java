@@ -31,6 +31,7 @@ public class SessionClosedConsumer {
     private NotificationService notificationService;
     @KafkaListener(topics = "session.closed", groupId = "session-closed-group")
     public void consume(SessionClosedEvent sessionClosedEvent){
+
         Long classId=sessionClosedEvent.getClassId();
         // now we need to get all the students enrolled in this class
         ClassRoom classRoom=classRepository.findById(classId).orElse(null);
@@ -39,6 +40,7 @@ public class SessionClosedConsumer {
             return;
         }
         List<Long> studentIds = classRepository.findEnrolledStudentIdsByClassId(classId);
+
         long headCnt=attendanceRepository.countPresentToday(classId);
 
         for (Long studentId : studentIds) {

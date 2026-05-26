@@ -20,11 +20,14 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/student")
 @CrossOrigin(origins = "http://localhost:5173")
 public class StudentController {
+    @Autowired
+    private AnalyticService analyticService;
     @Autowired
     private EnrollmentService enrollmentService;
     @Autowired
@@ -100,13 +103,10 @@ public class StudentController {
             @RequestParam Long studentId,
             @RequestParam Long classId
     ) {
+        SubjectAnalytics analytics = subjectAnalyticsRepository
+                .findByStudentIdAndClassId(studentId, classId)
+                .orElseGet(() -> analyticService.buildAnalytics(studentId, classId)); // live fallback
 
-        return subjectAnalyticsRepository
-                .findByStudentIdAndClassId(
-                        studentId,
-                        classId
-                )
-                .map(ResponseEntity::ok)
-                .orElse(ResponseEntity.notFound().build());
+        return ResponseEntity.ok(analytics);
     }
 }
