@@ -1,12 +1,13 @@
 package com.SmartAttendance.demo.Consumer;
 
 import com.SmartAttendance.demo.DTO.SubjectAnalytics;
-import com.SmartAttendance.demo.DTO.SubjectAnalyticsDTO;
+
 import com.SmartAttendance.demo.Entities.AttEnum;
 import com.SmartAttendance.demo.Entities.TrendEnum;
 import com.SmartAttendance.demo.KafkaEvent.SessionClosedEvent;
 import com.SmartAttendance.demo.Repository.AttendanceRepository;
 import com.SmartAttendance.demo.Repository.ClassRepository;
+import com.SmartAttendance.demo.Repository.SubjectAnalyticsRepository;
 import com.SmartAttendance.demo.Service.AnalyticService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.kafka.annotation.KafkaListener;
@@ -23,6 +24,8 @@ public class AnalyticsConsumer {
     private ClassRepository classRepository;
     @Autowired
     private AnalyticService analyticService;
+    @Autowired
+    private SubjectAnalyticsRepository subjectAnalyticsRepository;
     @KafkaListener(topics = "session.closed",
             groupId = "analytics-service")
 
@@ -35,7 +38,8 @@ public class AnalyticsConsumer {
             //for this student we need to give insights such as:
             // the number of classes that he/she can miss
             SubjectAnalytics dto=analyticService.buildAnalytics(studId,classId);
-
+            // we now have to persist this dto
+            subjectAnalyticsRepository.save(dto);
         }
     }
 
