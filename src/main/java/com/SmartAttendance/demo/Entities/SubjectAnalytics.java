@@ -16,11 +16,8 @@ import java.util.List;
 
 
 public class SubjectAnalytics {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-    private Long studentId;
-    private Long classId;
+    @EmbeddedId
+    private SubjectAnalyticsId id;
     private String className;
     private long attended;
     private long total;
@@ -32,21 +29,7 @@ public class SubjectAnalytics {
     @ElementCollection
     private List<Double> weeklyPcts;   // 8 values for sparkline
     private LocalDateTime computedAt;
-    public Long getStudentId() {
-        return studentId;
-    }
 
-    public void setStudentId(Long studentId) {
-        this.studentId = studentId;
-    }
-
-    public Long getClassId() {
-        return classId;
-    }
-
-    public void setClassId(Long classId) {
-        this.classId = classId;
-    }
 
     public String getClassName() {
         return className;
@@ -126,6 +109,14 @@ public class SubjectAnalytics {
 
     public void setComputedAt(LocalDateTime computedAt) {
         this.computedAt = computedAt;
+    }
+
+    public void setId(SubjectAnalyticsId compositeKey) {
+        this.id=compositeKey;
+    }
+
+    public SubjectAnalyticsId getId() {
+        return this.id;
     }
 }
 
