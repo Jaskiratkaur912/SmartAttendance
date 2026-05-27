@@ -16,8 +16,8 @@ public class Attendance {
     @ManyToOne
     @JoinColumn(name="class_id")
     private ClassRoom classRoom;
-    private LocalDateTime timestamp;  // ✅ new
-    private Double latitude;          // ✅ new
+    private LocalDateTime timestamp;
+    private Double latitude;
     private Double longitude;
 
     private LocalDate date;

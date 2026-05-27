@@ -2,6 +2,7 @@ package com.SmartAttendance.demo.Service;
 
 import com.SmartAttendance.demo.Entities.AttEnum;
 import com.SmartAttendance.demo.Entities.SubjectAnalytics;
+import com.SmartAttendance.demo.Entities.SubjectAnalyticsId;
 import com.SmartAttendance.demo.Entities.TrendEnum;
 import com.SmartAttendance.demo.Repository.AttendanceRepository;
 import com.SmartAttendance.demo.Repository.ClassRepository;
@@ -43,10 +44,12 @@ public class AnalyticService {
                 .findById(classId)
                 .orElseThrow()
                 .getClassName();
+        SubjectAnalyticsId compositeKey = new SubjectAnalyticsId();
+        compositeKey.setStudentId(studId);
+        compositeKey.setClassId(classId);
         SubjectAnalytics subjectAnalyticsDTO=new SubjectAnalytics();
         subjectAnalyticsDTO.setAttended(attended);
-        subjectAnalyticsDTO.setStudentId(studId);
-        subjectAnalyticsDTO.setClassId(classId);
+        subjectAnalyticsDTO.setId(compositeKey);
         subjectAnalyticsDTO.setClassName(className);
         subjectAnalyticsDTO.setMissable(missable);
         subjectAnalyticsDTO.setTotal(total);
