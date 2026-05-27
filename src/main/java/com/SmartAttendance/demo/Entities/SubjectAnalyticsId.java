@@ -9,6 +9,11 @@ import java.util.Objects;
 public class SubjectAnalyticsId implements Serializable {
     private Long studentId;
     private Long classId;
+    public SubjectAnalyticsId(){}
+    public SubjectAnalyticsId(Long studentId,Long classId){
+        this.studentId=studentId;
+        this.classId=classId;
+    }
 
     // equals() and hashCode() are REQUIRED
     @Override

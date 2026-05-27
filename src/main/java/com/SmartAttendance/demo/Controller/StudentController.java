@@ -6,6 +6,7 @@ import com.SmartAttendance.demo.DTO.StudentProfileDTO;
 import com.SmartAttendance.demo.Entities.Assignment;
 import com.SmartAttendance.demo.Entities.ClassRoom;
 import com.SmartAttendance.demo.Entities.SubjectAnalytics;
+import com.SmartAttendance.demo.Entities.SubjectAnalyticsId;
 import com.SmartAttendance.demo.Repository.AssignmentRepository;
 import com.SmartAttendance.demo.Repository.ClassRepository;
 import com.SmartAttendance.demo.Repository.SubjectAnalyticsRepository;
@@ -104,7 +105,7 @@ public class StudentController {
             @RequestParam Long classId
     ) {
         SubjectAnalytics analytics = subjectAnalyticsRepository
-                .findByStudentIdAndClassId(studentId, classId)
+                .findById(new SubjectAnalyticsId(studentId, classId))
                 .orElseGet(() -> analyticService.buildAnalytics(studentId, classId)); // live fallback
 
         return ResponseEntity.ok(analytics);
