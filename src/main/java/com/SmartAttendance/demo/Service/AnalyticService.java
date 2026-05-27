@@ -1,16 +1,17 @@
 package com.SmartAttendance.demo.Service;
 
-import com.SmartAttendance.demo.Entities.AttEnum;
-import com.SmartAttendance.demo.Entities.SubjectAnalytics;
-import com.SmartAttendance.demo.Entities.SubjectAnalyticsId;
-import com.SmartAttendance.demo.Entities.TrendEnum;
+import com.SmartAttendance.demo.Entities.*;
 import com.SmartAttendance.demo.Repository.AttendanceRepository;
 import com.SmartAttendance.demo.Repository.ClassRepository;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static java.lang.Math.floor;
 @Service
@@ -19,7 +20,7 @@ public class AnalyticService {
     AttendanceRepository attendanceRepository;
     @Autowired
     ClassRepository classRepository;
-    public SubjectAnalytics buildAnalytics(Long studId, Long classId){
+    public SubjectAnalytics buildAnalytics(Long studId, Long classId) throws JsonProcessingException {
         LocalDateTime cutOff = LocalDateTime.now().minusDays(14);
         Long attended=attendanceRepository.countByUserIdAndClassIdAndIsPresent(studId,classId, AttEnum.PRESENT);
         long total=attendanceRepository.countTotalSessionsByClassId(classId);
@@ -34,12 +35,17 @@ public class AnalyticService {
         TrendEnum trend = velocity > 3 ? TrendEnum.IMPROVING
                 : velocity < -3 ? TrendEnum.SLIPPING
                 : TrendEnum.STABLE;
-        List<Double> DailyPcts =
-                attendanceRepository
-                        .getLast14DailyAttendancePercentages(
-                                studId,
-                                classId
-                        );
+        List<DailyAnalyticsPts> dailyPcts = attendanceRepository
+                .getLast14DailyAttendancePercentages(studId, classId)
+                .stream()
+                .map(row -> new DailyAnalyticsPts(
+                        ((java.sql.Date) row[0]).toLocalDate(),
+                        row[1] != null ? ((Number) row[1]).doubleValue() : null
+                ))
+                .collect(Collectors.toList());
+        ObjectMapper mapper = new ObjectMapper();
+        mapper.registerModule(new JavaTimeModule());
+        String dailyPctsJson = mapper.writeValueAsString(dailyPcts);
         String className = classRepository
                 .findById(classId)
                 .orElseThrow()
@@ -56,7 +62,7 @@ public class AnalyticService {
         subjectAnalyticsDTO.setTrend(trend);
         subjectAnalyticsDTO.setVelocity(velocity);
         subjectAnalyticsDTO.setAttendancePct(attendancePct);
-        subjectAnalyticsDTO.setDailyPcts(DailyPcts);
+        subjectAnalyticsDTO.setDailyPcts(dailyPctsJson);
         subjectAnalyticsDTO.setRecentPct(recentPct);
         subjectAnalyticsDTO.setComputedAt(LocalDateTime.now());
         return subjectAnalyticsDTO;

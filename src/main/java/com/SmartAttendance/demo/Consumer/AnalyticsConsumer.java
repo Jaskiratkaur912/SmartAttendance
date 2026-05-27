@@ -11,6 +11,7 @@ import com.SmartAttendance.demo.Repository.AttendanceRepository;
 import com.SmartAttendance.demo.Repository.ClassRepository;
 import com.SmartAttendance.demo.Repository.SubjectAnalyticsRepository;
 import com.SmartAttendance.demo.Service.AnalyticService;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.stereotype.Component;
@@ -31,7 +32,7 @@ public class AnalyticsConsumer {
     @KafkaListener(topics = "session.closed",
             groupId = "analytics-service")
 
-    public void consume(SessionClosedEvent sessionClosedEvent) {
+    public void consume(SessionClosedEvent sessionClosedEvent) throws JsonProcessingException {
         System.out.println("Kafka event received for classId=" + sessionClosedEvent.getClassId());
         LocalDateTime cutOff = LocalDateTime.now().minusDays(14);
         //this consumer basically loops over all the students to provide them insights on their attendance trends

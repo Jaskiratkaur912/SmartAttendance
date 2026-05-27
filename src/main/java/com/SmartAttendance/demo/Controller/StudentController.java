@@ -3,15 +3,15 @@ package com.SmartAttendance.demo.Controller;
 import com.SmartAttendance.demo.Config.CloudinaryConfig;
 import com.SmartAttendance.demo.DTO.StudentProfileDTO;
 
-import com.SmartAttendance.demo.Entities.Assignment;
-import com.SmartAttendance.demo.Entities.ClassRoom;
-import com.SmartAttendance.demo.Entities.SubjectAnalytics;
-import com.SmartAttendance.demo.Entities.SubjectAnalyticsId;
+import com.SmartAttendance.demo.Entities.*;
 import com.SmartAttendance.demo.Repository.AssignmentRepository;
 import com.SmartAttendance.demo.Repository.ClassRepository;
 import com.SmartAttendance.demo.Repository.SubjectAnalyticsRepository;
 import com.SmartAttendance.demo.Service.*;
 import com.cloudinary.utils.ObjectUtils;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -100,14 +101,43 @@ public class StudentController {
         return assignmentService.hasSubmitted(assignmentId, studentId);
     }
     @GetMapping("/fetchAnalytics")
-    public ResponseEntity<SubjectAnalytics> fetchAnalytics(
+    public ResponseEntity<Map<String, Object>> fetchAnalytics(
             @RequestParam Long studentId,
             @RequestParam Long classId
     ) {
         SubjectAnalytics analytics = subjectAnalyticsRepository
                 .findById(new SubjectAnalyticsId(studentId, classId))
-                .orElseGet(() -> analyticService.buildAnalytics(studentId, classId)); // live fallback
+                .orElseGet(() -> {
+                    try {
+                        return analyticService.buildAnalytics(studentId, classId);
+                    } catch (JsonProcessingException e) {
+                        throw new RuntimeException(e);
+                    }
+                });
 
-        return ResponseEntity.ok(analytics);
+// Deserialize dailyPcts JSON string into a list before returning
+        ObjectMapper mapper = new ObjectMapper();
+        mapper.registerModule(new JavaTimeModule());
+        try {
+            List<DailyAnalyticsPts> dailyPcts = mapper.readValue(
+                    analytics.getDailyPcts(),
+                    mapper.getTypeFactory().constructCollectionType(List.class, DailyAnalyticsPts.class)
+            );
+            // Return a map with analytics + parsed dailyPcts
+            Map<String, Object> response = new HashMap<>();
+            response.put("attendancePct", analytics.getAttendancePct());
+            response.put("attended", analytics.getAttended());
+            response.put("total", analytics.getTotal());
+            response.put("missable", analytics.getMissable());
+            response.put("trend", analytics.getTrend());
+            response.put("velocity", analytics.getVelocity());
+            response.put("recentPct", analytics.getRecentPct());
+            response.put("className", analytics.getClassName());
+            response.put("computedAt", analytics.getComputedAt());
+            response.put("dailyPcts", dailyPcts);
+            return ResponseEntity.ok(response);
+        } catch (JsonProcessingException e) {
+            return ResponseEntity.internalServerError().build();
+        }
     }
 }

@@ -26,8 +26,8 @@ public class SubjectAnalytics {
     private double recentPct;
     private double velocity;
     private TrendEnum trend;
-    @ElementCollection
-    private List<Double> dailyPcts;
+    @Column(columnDefinition = "TEXT")
+    private String dailyPcts;
     private LocalDateTime computedAt;
 
 
@@ -95,7 +95,7 @@ public class SubjectAnalytics {
         this.trend = trend;
     }
 
-    public List<Double> getDailyPcts() {
+    public String getDailyPcts() {
         return this.dailyPcts;
     }
 
@@ -116,7 +116,7 @@ public class SubjectAnalytics {
         return this.id;
     }
 
-    public void setDailyPcts(List<Double> dailyPcts) {
+    public void setDailyPcts(String dailyPcts) {
         this.dailyPcts=dailyPcts;
     }
 }

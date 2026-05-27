@@ -85,19 +85,23 @@ public interface AttendanceRepository extends JpaRepository<Attendance, Long> {
 
     @Query(value = """
     SELECT
+        s.date,
         ROUND(
-            SUM(SUM(CASE WHEN is_present = 0 THEN 1 ELSE 0 END)) OVER (ORDER BY date) * 100.0
-            / SUM(COUNT(*)) OVER (ORDER BY date),
+            SUM(SUM(CASE WHEN a.is_present = 0 THEN 1 ELSE 0 END)) OVER (ORDER BY s.date) * 100.0
+            / SUM(COUNT(*)) OVER (ORDER BY s.date),
             2
         ) AS cumulative_pct
-    FROM attendance
-    WHERE user_id = :studentId
-      AND class_id = :classId
-    GROUP BY date
-    ORDER BY date ASC
+    FROM (
+        SELECT DISTINCT date FROM attendance WHERE class_id = :classId
+    ) s
+    LEFT JOIN attendance a ON a.date = s.date 
+        AND a.class_id = :classId 
+        AND a.user_id = :studentId
+    GROUP BY s.date
+    ORDER BY s.date ASC
     LIMIT 14
 """, nativeQuery = true)
-    List<Double> getLast14DailyAttendancePercentages(
+    List<Object[]> getLast14DailyAttendancePercentages(
             @Param("studentId") Long studentId,
             @Param("classId") Long classId
     );
