@@ -83,38 +83,21 @@ public interface AttendanceRepository extends JpaRepository<Attendance, Long> {
             @Param("cutoff") LocalDateTime cutoff
     );
 
-    /*
-      IMPORTANT:
-      is_present is SMALLINT in PostgreSQL
-      PRESENT enum ordinal = 0
-    */
     @Query(value = """
     SELECT
         ROUND(
-            (
-                SUM(
-                    CASE
-                        WHEN is_present = 0
-                        THEN 1
-                        ELSE 0
-                    END
-                ) * 100.0
-            ) / COUNT(*),
+            SUM(SUM(CASE WHEN is_present = 0 THEN 1 ELSE 0 END)) OVER (ORDER BY date) * 100.0
+            / SUM(COUNT(*)) OVER (ORDER BY date),
             2
-        ) AS attendance_percentage
-
+        ) AS cumulative_pct
     FROM attendance
-
     WHERE user_id = :studentId
       AND class_id = :classId
-
     GROUP BY date
-
-    ORDER BY date DESC
-
-    LIMIT 8
-    """, nativeQuery = true)
-    List<Double> getLast8AttendancePercentages(
+    ORDER BY date ASC
+    LIMIT 14
+""", nativeQuery = true)
+    List<Double> getLast14DailyAttendancePercentages(
             @Param("studentId") Long studentId,
             @Param("classId") Long classId
     );

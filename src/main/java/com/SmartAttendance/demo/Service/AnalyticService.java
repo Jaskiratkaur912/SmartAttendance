@@ -34,9 +34,9 @@ public class AnalyticService {
         TrendEnum trend = velocity > 3 ? TrendEnum.IMPROVING
                 : velocity < -3 ? TrendEnum.SLIPPING
                 : TrendEnum.STABLE;
-        List<Double> weeklyPcts =
+        List<Double> DailyPcts =
                 attendanceRepository
-                        .getLast8AttendancePercentages(
+                        .getLast14DailyAttendancePercentages(
                                 studId,
                                 classId
                         );
@@ -56,7 +56,7 @@ public class AnalyticService {
         subjectAnalyticsDTO.setTrend(trend);
         subjectAnalyticsDTO.setVelocity(velocity);
         subjectAnalyticsDTO.setAttendancePct(attendancePct);
-        subjectAnalyticsDTO.setWeeklyPcts(weeklyPcts);
+        subjectAnalyticsDTO.setDailyPcts(DailyPcts);
         subjectAnalyticsDTO.setRecentPct(recentPct);
         subjectAnalyticsDTO.setComputedAt(LocalDateTime.now());
         return subjectAnalyticsDTO;
