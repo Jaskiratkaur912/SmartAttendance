@@ -5,6 +5,7 @@ import com.SmartAttendance.demo.Entities.Assignment;
 import com.SmartAttendance.demo.Entities.ClassRoom;
 import com.SmartAttendance.demo.Entities.AssignmentSubmission;
 import com.SmartAttendance.demo.Entities.Doubt;
+import com.SmartAttendance.demo.KafkaEvent.AssignmentPostedEvent;
 import com.SmartAttendance.demo.KafkaEvent.SessionClosedEvent;
 import com.SmartAttendance.demo.Repository.AssignmentRepository;
 import com.SmartAttendance.demo.Repository.ClassRepository;
@@ -38,6 +39,8 @@ public class TeacherController {
     private DoubtRepository doubtRepository;
     @Autowired
     private KafkaTemplate<String, SessionClosedEvent> kafkaTemplate;
+    @Autowired
+    private KafkaTemplate<String,AssignmentPostedEvent> assignmentKafkaTemplate;
     @PreAuthorize("hasRole('TEACHER')")
     @PostMapping("/createClass")
     public void createClass(@RequestParam Long id,@RequestParam String className){
@@ -55,6 +58,8 @@ public class TeacherController {
         assignment.setDescription(description);
         assignment.setDeadline(LocalDateTime.parse(deadline));
         assignmentRepository.save(assignment);
+        assignmentKafkaTemplate.send("assignment.posted",String.valueOf(classId),new AssignmentPostedEvent(classId,LocalDateTime.parse(deadline)));
+
     }
     @GetMapping("/fetchClasses")
     public List<ClassRoom> fetchClass(@RequestParam Long teacherId){
